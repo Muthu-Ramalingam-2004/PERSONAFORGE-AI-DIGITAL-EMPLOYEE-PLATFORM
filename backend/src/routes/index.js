@@ -7,6 +7,7 @@ const chatRoutes = require('./chat');
 const kbRoutes = require('./kb');
 const workflowRoutes = require('./workflow');
 const adminRoutes = require('./admin');
+const promptRoutes = require('./prompts');
 
 // Mount Authentication module routes
 router.use('/auth', authRoutes);
@@ -22,6 +23,11 @@ router.use('/chat', chatRoutes);
 
 // Mount Knowledge Base (RAG) routes
 router.use('/kb', kbRoutes);
+router.use('/knowledge-base', kbRoutes);
+
+// Mount Prompts and Prompt Manager routes
+router.use('/prompts', promptRoutes);
+router.use('/prompt-manager', promptRoutes);
 
 // Mount Automation Workflows routes
 router.use('/workflow', workflowRoutes);

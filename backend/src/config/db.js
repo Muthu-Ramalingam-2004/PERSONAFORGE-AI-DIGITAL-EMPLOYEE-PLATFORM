@@ -1,598 +1,397 @@
-const fs = require('fs');
-const path = require('path');
-const crypto = require('crypto');
+"use strict";
+const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, "../../.env") });
 
-const DB_PATH = path.join(__dirname, 'db_emulated.json');
+const fs     = require("fs");
+const crypto = require("crypto");
 
-// Initialize database file if it doesn't exist
-const initDb = () => {
-  if (!fs.existsSync(DB_PATH)) {
-    const initialData = {
-      users: [],
-      ai_employees: [],
-      prompts: [],
-      chats: [],
-      messages: [],
-      documents: [],
-      settings: [],
-      analytics: [],
-      activity_logs: [],
-      document_chunks: []
-    };
-    fs.writeFileSync(DB_PATH, JSON.stringify(initialData, null, 2), 'utf8');
-  }
-};
+// ---------------------------------------------------------------------------
+// Path to the persistent local JSON "database"
+// ---------------------------------------------------------------------------
+const DB_PATH = path.join(__dirname, "db_emulated.json");
 
-const readDb = () => {
-  initDb();
-  try {
-    const data = fs.readFileSync(DB_PATH, 'utf8');
-    return JSON.parse(data);
-  } catch (err) {
-    console.error('Failed to read emulated db, resetting:', err.message);
-    const initialData = {
-      users: [],
-      ai_employees: [],
-      prompts: [],
-      chats: [],
-      messages: [],
-      documents: [],
-      settings: [],
-      analytics: [],
-      activity_logs: [],
-      document_chunks: []
-    };
-    return initialData;
-  }
-};
+// ---------------------------------------------------------------------------
+// Attempt a real PostgreSQL connection
+// ---------------------------------------------------------------------------
+let useRealDb = false;
+let pgPool    = null;
+let dbCheckPromise = null;
 
-const writeDb = (data) => {
-  try {
-    fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2), 'utf8');
-  } catch (err) {
-    console.error('Failed to write emulated db:', err.message);
-  }
-};
+const connectDb = () => {
+  if (!dbCheckPromise) {
+    dbCheckPromise = (async () => {
+      if (process.env.DATABASE_URL) {
+        try {
+          const { Pool } = require("pg");
+          pgPool = new Pool({
+            connectionString:        process.env.DATABASE_URL,
+            connectionTimeoutMillis: 3000,
+            idleTimeoutMillis:       10000,
+            max:                     5,
+          });
 
-const resolveVal = (valStr, params) => {
-  const trimmed = valStr.trim();
-  if (trimmed.startsWith('$')) {
-    const idx = parseInt(trimmed.substring(1)) - 1;
-    return params[idx];
-  }
-  if (trimmed === 'NULL' || trimmed === 'null') {
-    return null;
-  }
-  if (trimmed.startsWith("'") && trimmed.endsWith("'")) {
-    return trimmed.slice(1, -1);
-  }
-  if (trimmed.startsWith('"') && trimmed.endsWith('"')) {
-    return trimmed.slice(1, -1);
-  }
-  if (trimmed === 'NOW()' || trimmed === 'CURRENT_TIMESTAMP') {
-    return new Date().toISOString();
-  }
-  if (trimmed.match(/NOW\(\)\s*-\s*INTERVAL\s*'\d+\s+\w+'/i)) {
-    const match = trimmed.match(/INTERVAL\s*'(\d+)\s+(\w+)'/i);
-    if (match) {
-      const amt = parseInt(match[1]);
-      const unit = match[2].toLowerCase();
-      const date = new Date();
-      if (unit.startsWith('hour')) {
-        date.setHours(date.getHours() - amt);
-      } else if (unit.startsWith('day')) {
-        date.setDate(date.getDate() - amt);
-      } else if (unit.startsWith('minute')) {
-        date.setMinutes(date.getMinutes() - amt);
+          // CRITICAL: Must handle pool errors to prevent uncaughtException crashes
+          pgPool.on('error', (err) => {
+            console.warn('⚠️  [DATABASE] pg pool idle client error (non-fatal):', err.message);
+          });
+
+          const client = await pgPool.connect();
+          await client.query("SELECT 1");
+          client.release();
+          useRealDb = true;
+          console.log("✅ [DATABASE] Connected to PostgreSQL successfully.");
+          return true;
+        } catch (err) {
+          console.warn("⚠️  [DATABASE] Cannot reach PostgreSQL:", err.message);
+          console.warn("⚠️  [DATABASE] Using local emulated DB (db_emulated.json).");
+          useRealDb = false;
+          return false;
+        }
+      } else {
+        console.warn("⚠️  [DATABASE] DATABASE_URL missing. Using local emulated DB.");
+        useRealDb = false;
+        return false;
       }
-      return date.toISOString();
-    }
+    })();
   }
-  const num = Number(trimmed);
-  if (!isNaN(num) && trimmed !== '') {
-    return num;
-  }
-  // Try JSON parsing for arrays/objects
-  if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
-    try {
-      const cleanedJson = trimmed.replace(/::jsonb/gi, '');
-      return JSON.parse(cleanedJson);
-    } catch (e) {
-      // return as string if json parse fails
-    }
-  }
-  return trimmed;
+  return dbCheckPromise;
 };
 
-const resolveColVal = (colRef, row, defaultTable = '') => {
-  const cleanRef = colRef.trim();
-  const parts = cleanRef.split('.');
-  if (parts.length === 2) {
-    const alias = parts[0].toLowerCase();
-    const field = parts[1].toLowerCase();
-    if (row.hasOwnProperty(`${alias}_${field}`)) {
-      return row[`${alias}_${field}`];
+// ---------------------------------------------------------------------------
+// JSON database helpers
+// ---------------------------------------------------------------------------
+const EMPTY_DB = () => ({
+  users:[], ai_employees:[], prompts:[], chats:[], messages:[],
+  documents:[], document_chunks:[], settings:[], analytics:[], activity_logs:[]
+});
+
+function readDb() {
+  if (!fs.existsSync(DB_PATH)) {
+    const e = EMPTY_DB(); fs.writeFileSync(DB_PATH, JSON.stringify(e, null, 2)); return e;
+  }
+  try {
+    const parsed = JSON.parse(fs.readFileSync(DB_PATH, "utf8"));
+    const empty = EMPTY_DB();
+    let changed = false;
+    for (const key of Object.keys(empty)) {
+      if (!parsed[key]) {
+        parsed[key] = [];
+        changed = true;
+      }
     }
-    if (row.hasOwnProperty(field)) {
-      return row[field];
+    if (changed) {
+      fs.writeFileSync(DB_PATH, JSON.stringify(parsed, null, 2), "utf8");
     }
-  } else {
-    const field = cleanRef.toLowerCase();
-    if (row.hasOwnProperty(field)) {
-      return row[field];
+    return parsed;
+  }
+  catch(_) { return EMPTY_DB(); }
+}
+function writeDb(data) {
+  fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2), "utf8");
+}
+
+// ---------------------------------------------------------------------------
+// Value resolver  ($1, NOW(), literal string, number, etc.)
+// ---------------------------------------------------------------------------
+function resolveVal(raw, params) {
+  const v = (raw || "").trim();
+  if (/^\$\d+$/.test(v)) return params[parseInt(v.slice(1)) - 1];
+  if (v === "NULL" || v === "null") return null;
+  if (v === "NOW()" || v === "CURRENT_TIMESTAMP") return new Date().toISOString();
+  if (/^'.*'$/.test(v)) return v.slice(1,-1);
+  if (/^".*"$/.test(v)) return v.slice(1,-1);
+  const n = Number(v); if (!isNaN(n) && v !== "") return n;
+  return v;
+}
+
+// ---------------------------------------------------------------------------
+// WHERE clause parsing & matching
+// ---------------------------------------------------------------------------
+function parseWhere(str) {
+  const cleaned = str.replace(/\s+(ORDER\s+BY|LIMIT|GROUP\s+BY).*/i,"").trim();
+  return cleaned.split(/\s+AND\s+/i).map(part => {
+    part = part.trim();
+    if (/\s+IS\s+NOT\s+NULL/i.test(part)) return { field: part.replace(/\s+IS\s+NOT\s+NULL/i,"").trim(), op:"IS NOT NULL", valStr:"" };
+    if (/\s+IS\s+NULL/i.test(part))     return { field: part.replace(/\s+IS\s+NULL/i,"").trim(), op:"IS NULL", valStr:"" };
+    if (/\s+ILIKE\s+/i.test(part)) {
+      const m = part.match(/(.+?)\s+ILIKE\s+(.+)/i);
+      return { field:m[1].trim(), op:"ILIKE", valStr:m[2].trim() };
     }
-    if (defaultTable && row.hasOwnProperty(`${defaultTable.toLowerCase()}_${field}`)) {
-      return row[`${defaultTable.toLowerCase()}_${field}`];
+    if (/\s+IN\s*\(/i.test(part)) {
+      const m = part.match(/(.+?)\s+IN\s*\((.+)\)/i);
+      return { field:m[1].trim(), op:"IN", valStr:m[2].trim() };
     }
+    if (part.includes("!=") || part.includes("<>")) {
+      const sep = part.includes("!=") ? "!=" : "<>";
+      const idx = part.indexOf(sep);
+      return { field:part.substring(0,idx).trim(), op:"!=", valStr:part.substring(idx+sep.length).trim() };
+    }
+    if (part.includes("=")) {
+      const idx = part.indexOf("=");
+      return { field:part.substring(0,idx).trim(), op:"=", valStr:part.substring(idx+1).trim() };
+    }
+    return null;
+  }).filter(Boolean);
+}
+
+function pv(str, params) {
+  const s=(str||"").trim();
+  if (/^\$\d+$/.test(s)) return params[parseInt(s.slice(1))-1];
+  if (/^'.*'$/.test(s)) return s.slice(1,-1);
+  return s;
+}
+
+function getField(expr, row) {
+  const bare = expr.trim().split(".").pop().toLowerCase();
+  if (row[bare] !== undefined) return row[bare];
+  for (const k of Object.keys(row)) {
+    if (k.toLowerCase() === bare || k.toLowerCase().endsWith("_"+bare)) return row[k];
   }
   return undefined;
-};
+}
 
-// Simple where clause parser supporting field = $N, field != $N, and, or, ILIKE, IN
-const parseWhereClause = (whereStr) => {
-  // Strip trailing sorting/limiting if it leaked
-  const cleaned = whereStr.replace(/\s+(ORDER\s+BY|LIMIT|GROUP\s+BY).*/i, '').trim();
-
-  // Splits by ' AND ' (case insensitive)
-  const parts = cleaned.split(/\s+AND\s+/i).map(p => p.trim());
-  const conditions = [];
-
-  parts.forEach(part => {
-    let op = '=';
-    let field = '';
-    let valStr = '';
-
-    if (part.includes('!=')) {
-      op = '!=';
-      const index = part.indexOf('!=');
-      field = part.substring(0, index).trim();
-      valStr = part.substring(index + 2).trim();
-    } else if (part.includes('<>')) {
-      op = '!=';
-      const index = part.indexOf('<>');
-      field = part.substring(0, index).trim();
-      valStr = part.substring(index + 2).trim();
-    } else if (part.match(/\s+ILIKE\s+/i)) {
-      op = 'ILIKE';
-      const match = part.match(/(.+?)\s+ILIKE\s+(.+)/i);
-      field = match[1].trim();
-      valStr = match[2].trim();
-    } else if (part.match(/\s+IN\s+/i)) {
-      op = 'IN';
-      const match = part.match(/(.+?)\s+IN\s*\((.+)\)/i);
-      field = match[1].trim();
-      valStr = match[2].trim();
-    } else if (part.includes('=')) {
-      op = '=';
-      const index = part.indexOf('=');
-      field = part.substring(0, index).trim();
-      valStr = part.substring(index + 1).trim();
-    } else {
-      return;
-    }
-
-    conditions.push({
-      field: field.trim(),
-      op,
-      valStr
-    });
+function matchRow(row, conds, params) {
+  if (!conds || !conds.length) return true;
+  return conds.every(({field,op,valStr}) => {
+    const actual = getField(field,row);
+    if (op==="IS NULL")     return actual==null;
+    if (op==="IS NOT NULL") return actual!=null;
+    if (op==="ILIKE") { const p=pv(valStr,params).replace(/%/g,"").toLowerCase(); return String(actual||"").toLowerCase().includes(p); }
+    if (op==="IN")    { return valStr.split(",").map(v=>pv(v.trim(),params)).includes(String(actual)); }
+    const exp = pv(valStr,params);
+    if (op==="!=") return String(actual)!==String(exp);
+    return String(actual)===String(exp);
   });
+}
 
-  return conditions;
-};
+// ---------------------------------------------------------------------------
+// Core emulator
+// ---------------------------------------------------------------------------
+function emulatedQuery(queryText, params=[]) {
+  const sql = queryText.replace(/\s+/g," ").trim();
 
-const matchesFilter = (row, filter, params, defaultTable = '') => {
-  if (!filter || filter.length === 0) return true;
+  // No-ops
+  if (/^(BEGIN|COMMIT|ROLLBACK|CREATE\s+TABLE|SET\s+)/i.test(sql))
+    return { rows:[], rowCount:0 };
 
-  return filter.every(cond => {
-    const { field, op, valStr } = cond;
-    
-    const getParamVal = (vStr) => {
-      const m = vStr.trim().match(/^\$(\d+)$/);
-      if (m) {
-        return params[parseInt(m[1]) - 1];
-      }
-      if (vStr.startsWith("'") && vStr.endsWith("'")) {
-        return vStr.slice(1, -1);
-      }
-      return vStr;
-    };
+  // SELECT 1 health probe
+  if (/^SELECT\s+1$/i.test(sql)) return { rows:[{"?column?":1}], rowCount:1 };
 
-    let actual = resolveColVal(field, row, defaultTable);
-    
-    // Fallback search check for compatibility
-    if (actual === undefined) {
-      const cleanField = field.split('.').pop().toLowerCase();
-      actual = row[cleanField];
-      if (actual === undefined) {
-        if (cleanField === 'user_id' && row.userId !== undefined) actual = row.userId;
-        else if (cleanField === 'employee_id' && row.employeeId !== undefined) actual = row.employeeId;
-      }
+  // ── INSERT ──────────────────────────────────────────────────────────────
+  if (/^INSERT\s+INTO/i.test(sql)) {
+    const m = sql.match(/INSERT\s+INTO\s+(\w+)\s*\(([^)]+)\)\s*VALUES\s*\((.+?)\)(?:\s+ON\s+CONFLICT[^;]*?DO\s+NOTHING)?(?:\s+RETURNING\s+.*)?$/i);
+    if (!m) throw new Error("Cannot parse INSERT: "+sql);
+
+    const tableName = m[1].toLowerCase();
+    const cols      = m[2].split(",").map(c=>c.trim());
+    const rawVals   = m[3];
+
+    // tokenise values respecting quoted strings
+    const vals=[]; let cur="", inStr=false, paren=0;
+    for (let i=0;i<rawVals.length;i++) {
+      const ch=rawVals[i];
+      if (ch==="'" && rawVals[i-1]!=="\\") inStr=!inStr;
+      if (!inStr){ if(ch==="(")paren++; if(ch===")")paren--; }
+      if(ch===","&&!inStr&&paren===0){vals.push(cur);cur="";}else cur+=ch;
     }
+    vals.push(cur);
 
-    if (op === '=') {
-      const val = getParamVal(valStr);
-      return String(actual) === String(val);
-    }
-    if (op === '!=') {
-      const val = getParamVal(valStr);
-      return String(actual) !== String(val);
-    }
-    if (op === 'ILIKE') {
-      let val = valStr;
-      const m = valStr.trim().match(/^\$(\d+)$/);
-      if (m) {
-        val = params[parseInt(m[1]) - 1];
-      } else if (valStr.startsWith("'") && valStr.endsWith("'")) {
-        val = valStr.slice(1, -1);
-      }
-      const cleanVal = String(val).replace(/%/g, '').toLowerCase();
-      return String(actual || '').toLowerCase().includes(cleanVal);
-    }
-    if (op === 'IN') {
-      const listStr = valStr.replace(/^\(|\)$/g, '');
-      const listVals = listStr.split(',').map(v => {
-        const trimmed = v.trim();
-        const m = trimmed.match(/^\$(\d+)$/);
-        if (m) return params[parseInt(m[1]) - 1];
-        if (trimmed.startsWith("'") && trimmed.endsWith("'")) return trimmed.slice(1, -1);
-        return trimmed;
-      });
-      return listVals.includes(String(actual));
-    }
-
-    return true;
-  });
-};
-
-const executeQuery = async (queryText, params = []) => {
-  // Clean whitespace
-  const sql = queryText.replace(/\s+/g, ' ').trim();
-  const dbData = readDb();
-
-  // 1. CREATE TABLE check
-  if (sql.match(/^CREATE\s+TABLE/i)) {
-    return { rows: [], rowCount: 0 };
+    const db   = readDb();
+    const list = db[tableName] || [];
+    const rec  = { id:crypto.randomUUID(), created_at:new Date().toISOString(), updated_at:new Date().toISOString() };
+    cols.forEach((col,i)=>{ rec[col]=resolveVal(vals[i],params); });
+    list.push(rec); db[tableName]=list; writeDb(db);
+    return { rows:[rec], rowCount:1 };
   }
 
-  // 2. INSERT statement
-  if (sql.match(/^INSERT\s+INTO/i)) {
-    const insertMatch = sql.match(/INSERT\s+INTO\s+(\w+)\s*\(([^)]+)\)\s*VALUES\s*\((.+)\)/i);
-    if (!insertMatch) {
-      throw new Error(`Failed to parse INSERT query: ${sql}`);
-    }
-    const tableName = insertMatch[1].toLowerCase();
-    const cols = insertMatch[2].split(',').map(c => c.trim());
-    const valuesListStr = insertMatch[3];
-    
-    // Split values by commas, respecting quotes and parentheses
-    const vals = [];
-    let current = '';
-    let inString = false;
-    let parenCount = 0;
-    for (let i = 0; i < valuesListStr.length; i++) {
-      const char = valuesListStr[i];
-      if (char === "'" && valuesListStr[i - 1] !== '\\') {
-        inString = !inString;
-      }
-      if (!inString) {
-        if (char === '(') parenCount++;
-        if (char === ')') parenCount--;
-      }
-      if (char === ',' && !inString && parenCount === 0) {
-        vals.push(current);
-        current = '';
-      } else {
-        current += char;
-      }
-    }
-    vals.push(current);
+  // ── UPDATE ──────────────────────────────────────────────────────────────
+  if (/^UPDATE/i.test(sql)) {
+    const m = sql.match(/UPDATE\s+(\w+)\s+SET\s+(.+?)\s+WHERE\s+(.+?)(?:\s+RETURNING.*)?$/i);
+    if (!m) throw new Error("Cannot parse UPDATE: "+sql);
 
-    const tableList = dbData[tableName] || [];
-    const newRecord = {
-      id: crypto.randomUUID(),
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    };
-
-    cols.forEach((col, idx) => {
-      newRecord[col] = resolveVal(vals[idx], params);
+    const tableName = m[1].toLowerCase();
+    const updates   = {};
+    m[2].split(",").forEach(pair=>{
+      const eq=pair.indexOf("="); if(eq===-1)return;
+      const col=pair.substring(0,eq).trim();
+      const raw=pair.substring(eq+1).trim();
+      updates[col] = /CURRENT_TIMESTAMP|NOW\(\)/i.test(raw) ? new Date().toISOString() : resolveVal(raw,params);
     });
 
-    tableList.push(newRecord);
-    dbData[tableName] = tableList;
-    writeDb(dbData);
+    const db      = readDb();
+    const list    = db[tableName]||[];
+    const conds   = parseWhere(m[3]);
+    const changed = [];
 
-    return { rows: [newRecord], rowCount: 1 };
+    list.forEach(row=>{ if(matchRow(row,conds,params)){ Object.assign(row,updates); row.updated_at=new Date().toISOString(); changed.push(row); } });
+    if (changed.length) writeDb(db);
+    return { rows:changed, rowCount:changed.length };
   }
 
-  // 3. UPDATE statement
-  if (sql.match(/^UPDATE/i)) {
-    const updateMatch = sql.match(/UPDATE\s+(\w+)\s+SET\s+(.+?)\s+WHERE\s+(.+)/i);
-    if (!updateMatch) {
-      throw new Error(`Failed to parse UPDATE query: ${sql}`);
-    }
-    const tableName = updateMatch[1].toLowerCase();
-    const setStr = updateMatch[2];
-    const whereStr = updateMatch[3];
+  // ── DELETE ──────────────────────────────────────────────────────────────
+  if (/^DELETE\s+FROM/i.test(sql)) {
+    const m = sql.match(/DELETE\s+FROM\s+(\w+)(?:\s+WHERE\s+(.+?))?(?:\s+RETURNING.*)?$/i);
+    if (!m) throw new Error("Cannot parse DELETE: "+sql);
 
-    // Parse SET fields
-    const setPairs = setStr.split(',').map(p => p.trim());
-    const updates = {};
-    setPairs.forEach(pair => {
-      const eqIdx = pair.indexOf('=');
-      if (eqIdx !== -1) {
-        const col = pair.substring(0, eqIdx).trim();
-        const valStr = pair.substring(eqIdx + 1).trim();
-        updates[col] = resolveVal(valStr, params);
+    const tableName = m[1].toLowerCase();
+    const db        = readDb();
+    const list      = db[tableName]||[];
+    const conds     = m[2] ? parseWhere(m[2]) : [];
+    const kept=[], removed=[];
+    list.forEach(row=>{ (conds.length&&matchRow(row,conds,params)?removed:kept).push(row); });
+    db[tableName]=kept;
+
+    removed.forEach(({id})=>{
+      if(tableName==="ai_employees"){
+        db.prompts         =(db.prompts||[]).filter(r=>r.employee_id!==id);
+        db.chats           =(db.chats||[]).filter(r=>r.employee_id!==id);
+        db.documents       =(db.documents||[]).filter(r=>r.employee_id!==id);
+        db.document_chunks =(db.document_chunks||[]).filter(r=>r.employee_id!==id);
+        db.analytics       =(db.analytics||[]).filter(r=>r.employee_id!==id);
+      } else if(tableName==="chats"){
+        db.messages=(db.messages||[]).filter(r=>r.chat_id!==id);
+      } else if(tableName==="documents"){
+        db.document_chunks=(db.document_chunks||[]).filter(r=>r.document_id!==id);
       }
     });
-
-    // Parse WHERE filter
-    const filter = parseWhereClause(whereStr);
-    const tableList = dbData[tableName] || [];
-    let updatedCount = 0;
-    const updatedRows = [];
-
-    tableList.forEach(row => {
-      if (matchesFilter(row, filter, params)) {
-        Object.assign(row, updates);
-        row.updated_at = new Date().toISOString();
-        updatedRows.push(row);
-        updatedCount++;
-      }
-    });
-
-    if (updatedCount > 0) {
-      writeDb(dbData);
-    }
-
-    return { rows: updatedRows, rowCount: updatedCount };
+    if(removed.length) writeDb(db);
+    return { rows:removed, rowCount:removed.length };
   }
 
-  // 4. DELETE statement
-  if (sql.match(/^DELETE\s+FROM/i)) {
-    const deleteMatch = sql.match(/DELETE\s+FROM\s+(\w+)(?:\s+WHERE\s+(.+))?/i);
-    if (!deleteMatch) {
-      throw new Error(`Failed to parse DELETE query: ${sql}`);
-    }
-    const tableName = deleteMatch[1].toLowerCase();
-    const whereStr = deleteMatch[2];
+  // ── SELECT ──────────────────────────────────────────────────────────────
+  if (/^SELECT/i.test(sql)) {
+    if (/NOW\(\)|CURRENT_TIMESTAMP/i.test(sql)&&!/FROM/i.test(sql))
+      return { rows:[{now:new Date().toISOString()}], rowCount:1 };
 
-    const filter = whereStr ? parseWhereClause(whereStr) : null;
-    const tableList = dbData[tableName] || [];
-    
-    const remaining = [];
-    const deleted = [];
-    tableList.forEach(row => {
-      if (filter && matchesFilter(row, filter, params)) {
-        deleted.push(row);
-      } else {
-        remaining.push(row);
-      }
-    });
+    const db     = readDb();
+    const fromM  = sql.match(/\bFROM\s+(\w+)(?:\s+(\w+))?/i);
+    if (!fromM) return { rows:[], rowCount:0 };
 
-    dbData[tableName] = remaining;
+    const tableName  = fromM[1].toLowerCase();
+    const tableAlias = (fromM[2]&&!/WHERE|JOIN|ON|ORDER|GROUP|LIMIT/i.test(fromM[2])) ? fromM[2].toLowerCase() : tableName;
 
-    // Handle cascade deletes
-    if (deleted.length > 0) {
-      deleted.forEach(row => {
-        const id = row.id;
-        if (tableName === 'ai_employees') {
-          dbData.prompts = (dbData.prompts || []).filter(p => p.employee_id !== id);
-          dbData.chats = (dbData.chats || []).filter(c => c.employee_id !== id);
-          dbData.documents = (dbData.documents || []).filter(d => d.employee_id !== id);
-          dbData.document_chunks = (dbData.document_chunks || []).filter(ch => ch.employee_id !== id);
-        } else if (tableName === 'chats') {
-          dbData.messages = (dbData.messages || []).filter(m => m.chat_id !== id);
-        } else if (tableName === 'documents') {
-          dbData.document_chunks = (dbData.document_chunks || []).filter(ch => ch.document_id !== id);
-        }
-      });
-      writeDb(dbData);
-    }
+    let rows = JSON.parse(JSON.stringify(db[tableName]||[]));
+    // Add alias-prefixed shadow fields
+    rows = rows.map(row=>{ const r={...row}; Object.keys(row).forEach(k=>{ r[`${tableAlias}_${k}`]=row[k]; }); return r; });
 
-    return { rows: deleted, rowCount: deleted.length };
-  }
+    // JOINs — process each in order, chaining the merged results
+    const joinRe = /(LEFT\s+)?JOIN\s+(\w+)(?:\s+(\w+))?\s+ON\s+([\w.]+)\s*=\s*([\w.]+)/gi;
+    let jm;
+    while((jm=joinRe.exec(sql))!==null){
+      const jTable = jm[2].toLowerCase();
+      const jAlias = (jm[3]&&!/WHERE|ON|ORDER|GROUP|LIMIT/i.test(jm[3])) ? jm[3].toLowerCase() : jTable;
+      const lSide  = jm[4].toLowerCase();
+      const rSide  = jm[5].toLowerCase();
+      const jList  = db[jTable]||[];
+      const isLeft = !!jm[1];
 
-  // 5. SELECT statement
-  if (sql.match(/^SELECT/i)) {
-    const fromMatch = sql.match(/FROM\s+(\w+)(?:\s+(\w+))?/i);
-    if (!fromMatch) {
-      if (sql.includes('NOW()') || sql.includes('CURRENT_TIMESTAMP')) {
-        return { rows: [{ now: new Date().toISOString() }], rowCount: 1 };
-      }
-      return { rows: [], rowCount: 0 };
-    }
-
-    const tableName = fromMatch[1].toLowerCase();
-    const tableAlias = fromMatch[2] ? fromMatch[2].toLowerCase() : null;
-
-    let rows = JSON.parse(JSON.stringify(dbData[tableName] || []));
-
-    // Add prefixes for main table columns
-    const mainPrefix = tableAlias || tableName;
-    rows = rows.map(row => {
-      const newRow = { ...row };
-      Object.keys(row).forEach(k => {
-        newRow[`${mainPrefix}_${k}`] = row[k];
-      });
-      return newRow;
-    });
-
-    // Handle JOINS
-    const joinMatches = [...sql.matchAll(/(LEFT\s+)?JOIN\s+(\w+)(?:\s+(\w+))?\s+ON\s+([\w.]+)\s*=\s*([\w.]+)/gi)];
-    joinMatches.forEach(join => {
-      const joinTable = join[2].toLowerCase();
-      const joinAlias = join[3] ? join[3].toLowerCase() : null;
-      const onLeft = join[4].toLowerCase();
-      const onRight = join[5].toLowerCase();
-
-      const joinList = dbData[joinTable] || [];
-
-      rows = rows.map(row => {
-        const matchingRecord = joinList.find(jr => {
-          const lVal = resolveColVal(onLeft, row, tableAlias || tableName);
-          const rVal = resolveColVal(onRight, jr, joinAlias || joinTable);
-          if (lVal !== undefined && rVal !== undefined && lVal === rVal) return true;
-          
-          const lValRev = resolveColVal(onRight, row, tableAlias || tableName);
-          const rValRev = resolveColVal(onLeft, jr, joinAlias || joinTable);
-          return lValRev !== undefined && rValRev !== undefined && lValRev === rValRev;
-        });
-
-        if (matchingRecord) {
-          const merged = { ...row };
-          const prefix = joinAlias || joinTable;
-          Object.keys(matchingRecord).forEach(k => {
-            merged[`${prefix}_${k}`] = matchingRecord[k];
-            if (!merged.hasOwnProperty(k) || joinTable === 'prompts') {
-              merged[k] = matchingRecord[k];
+      // Helper: look up a table.column reference from a merged row
+      // Checks: alias_col, bare_col, or just col
+      const resolveRef = (expr, row) => {
+        const parts = expr.split('.');
+        if (parts.length === 2) {
+          const alias = parts[0];
+          const col   = parts[1];
+          // Try alias_col (e.g. e_id for e.id)
+          if (row[`${alias}_${col}`] !== undefined) return row[`${alias}_${col}`];
+          // Try just col
+          if (row[col] !== undefined) return row[col];
+          // Scan all keys ending in _col
+          for (const k of Object.keys(row)) {
+            if (k.toLowerCase() === col.toLowerCase() || k.toLowerCase().endsWith('_'+col.toLowerCase())) {
+              return row[k];
             }
-          });
-          if (joinTable === 'ai_employees') {
-            merged.employee_name = matchingRecord.name;
-            merged.employee_avatar = matchingRecord.avatar_url;
-            merged.employee_category = matchingRecord.category;
           }
-          if (joinTable === 'users') {
-            merged.user_name = matchingRecord.name;
-            merged.user_email = matchingRecord.email;
-          }
-          return merged;
+          return undefined;
         }
-        return row;
-      });
-    });
-
-    // Handle WHERE clause
-    const whereMatch = sql.match(/WHERE\s+(.+?)(?:\s+GROUP\s+BY|\s+ORDER\s+BY|\s+LIMIT|$)/i);
-    if (whereMatch) {
-      const filter = parseWhereClause(whereMatch[1]);
-      rows = rows.filter(row => matchesFilter(row, filter, params, tableAlias || tableName));
-    }
-
-    // Handle aggregates
-    if (sql.match(/SELECT\s+COUNT\(\*\)/i)) {
-      const groupByMatch = sql.match(/GROUP\s+BY\s+([\w.]+)/i);
-      if (groupByMatch) {
-        const groupCol = groupByMatch[1].split('.').pop().toLowerCase();
-        const groups = {};
-        rows.forEach(r => {
-          const val = r[groupCol];
-          groups[val] = (groups[val] || 0) + 1;
-        });
-        const groupedRows = Object.keys(groups).map(k => ({
-          [groupCol]: k,
-          name: k,
-          value: groups[k],
-          count: groups[k]
-        }));
-        return { rows: groupedRows, rowCount: groupedRows.length };
-      }
-
-      return { rows: [{ count: rows.length }], rowCount: 1 };
-    }
-
-    if (sql.match(/SELECT\s+COALESCE/i) || sql.match(/AVG\(/i) || sql.match(/SUM\(/i)) {
-      let totalTokens = 0;
-      let totalCost = 0;
-      let totalTime = 0;
-      let count = 0;
-
-      rows.forEach(r => {
-        totalTokens += Number(r.tokens_used || 0);
-        totalCost += Number(r.cost || 0);
-        totalTime += Number(r.response_time || 0);
-        count++;
-      });
-
-      const avgTime = count > 0 ? Math.round(totalTime / count) : 0;
-
-      return {
-        rows: [{
-          total_tokens: totalTokens,
-          tokens: totalTokens,
-          total_cost: totalCost,
-          avg_time: avgTime
-        }],
-        rowCount: 1
+        // No alias: just bare column name
+        const col = parts[0];
+        if (row[col] !== undefined) return row[col];
+        for (const k of Object.keys(row)) {
+          if (k.toLowerCase() === col.toLowerCase() || k.toLowerCase().endsWith('_'+col.toLowerCase())) {
+            return row[k];
+          }
+        }
+        return undefined;
       };
-    }
 
-    // Special handler for Daily volume chat history charting
-    if (sql.includes('TO_CHAR') || sql.includes('date_trunc')) {
-      const days = [];
-      for (let i = 6; i >= 0; i--) {
-        const d = new Date();
-        d.setDate(d.getDate() - i);
-        const label = d.toLocaleDateString('en-US', { month: 'short', day: '2-digit' });
-        days.push({
-          date_label: label,
-          conversations: 0,
-          tokens: 0
+      rows = rows.map(row=>{
+        const lVal = resolveRef(lSide, row);
+        const match = jList.find(jr => {
+          const rVal = resolveRef(rSide, jr);
+          if (lVal !== undefined && rVal !== undefined && String(lVal) === String(rVal)) return true;
+          // Try reversed
+          const lVal2 = resolveRef(rSide, row);
+          const rVal2 = resolveRef(lSide, jr);
+          return lVal2 !== undefined && rVal2 !== undefined && String(lVal2) === String(rVal2);
         });
-      }
-
-      rows.forEach(r => {
-        const rDate = new Date(r.created_at);
-        const rLabel = rDate.toLocaleDateString('en-US', { month: 'short', day: '2-digit' });
-        const dayObj = days.find(d => d.date_label === rLabel);
-        if (dayObj) {
-          dayObj.conversations++;
-          dayObj.tokens += Number(r.tokens || r.tokens_used || 150);
-        }
-      });
-
-      return { rows: days, rowCount: days.length };
+        if(!match&&isLeft) return row;
+        if(!match) return null;
+        const merged={...row};
+        Object.keys(match).forEach(k=>{ merged[`${jAlias}_${k}`]=match[k]; if(!Object.prototype.hasOwnProperty.call(merged,k))merged[k]=match[k]; });
+        if(jTable==="ai_employees"){ merged.employee_name=match.name; merged.employee_avatar=match.avatar_url; merged.employee_category=match.category; }
+        if(jTable==="users"){ merged.user_name=match.name; merged.user_email=match.email; }
+        return merged;
+      }).filter(Boolean);
     }
 
-    // Handle ORDER BY
-    const orderByMatch = sql.match(/ORDER\s+BY\s+([\w.]+)(?:\s+(ASC|DESC))?/i);
-    if (orderByMatch) {
-      const field = orderByMatch[1].split('.').pop().toLowerCase();
-      const isDesc = orderByMatch[2] ? orderByMatch[2].toUpperCase() === 'DESC' : false;
+    // WHERE
+    const whereM = sql.match(/\bWHERE\s+(.+?)(?:\s+GROUP\s+BY|\s+ORDER\s+BY|\s+LIMIT|$)/i);
+    if(whereM){ const conds=parseWhere(whereM[1]); rows=rows.filter(r=>matchRow(r,conds,params)); }
 
-      rows.sort((a, b) => {
-        let valA = a[field];
-        let valB = b[field];
-
-        if (field === 'created_at' || field === 'updated_at' || field === 'timestamp') {
-          valA = new Date(valA || 0).getTime();
-          valB = new Date(valB || 0).getTime();
-        }
-
-        if (valA < valB) return isDesc ? 1 : -1;
-        if (valA > valB) return isDesc ? -1 : 1;
-        return 0;
-      });
+    // COUNT(*)
+    if(/SELECT\s+COUNT\(\*\)/i.test(sql)){
+      const gm=sql.match(/GROUP\s+BY\s+([\w.]+)/i);
+      if(gm){ const gc=gm[1].split(".").pop().toLowerCase(); const g={}; rows.forEach(r=>{ const v=r[gc]; g[v]=(g[v]||0)+1; }); const gr=Object.entries(g).map(([k,v])=>({[gc]:k,name:k,value:v,count:v})); return {rows:gr,rowCount:gr.length}; }
+      return { rows:[{count:String(rows.length)}], rowCount:1 };
     }
 
-    // Handle LIMIT
-    const limitMatch = sql.match(/LIMIT\s+(\d+)/i);
-    if (limitMatch) {
-      const lim = parseInt(limitMatch[1]);
-      rows = rows.slice(0, lim);
+    // Aggregates (COALESCE / AVG / SUM)
+    if(/COALESCE|AVG\(|SUM\(/i.test(sql)){
+      let tt=0,tr=0,cnt=0; rows.forEach(r=>{ tt+=Number(r.tokens_used||0); tr+=Number(r.response_time||0); cnt++; });
+      return { rows:[{ avg_time:cnt?String(Math.round(tr/cnt)):"0", total_tokens:String(tt), tokens:String(tt), total_cost:"0" }], rowCount:1 };
     }
 
-    return { rows, rowCount: rows.length };
+    // Chart (TO_CHAR / date_trunc)
+    if(/TO_CHAR|date_trunc/i.test(sql)){
+      const days=[]; for(let i=6;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i); days.push({ date_label:d.toLocaleDateString("en-US",{month:"short",day:"2-digit"}), conversations:0, tokens:"0" }); }
+      rows.forEach(r=>{ const lbl=new Date(r.created_at).toLocaleDateString("en-US",{month:"short",day:"2-digit"}); const day=days.find(d=>d.date_label===lbl); if(day){ day.conversations++; day.tokens=String(Number(day.tokens)+Number(r.tokens_used||150)); } });
+      return { rows:days, rowCount:days.length };
+    }
+
+    // ORDER BY
+    const orderM=sql.match(/ORDER\s+BY\s+([\w.]+)(?:\s+(ASC|DESC))?/i);
+    if(orderM){ const f=orderM[1].split(".").pop().toLowerCase(); const desc=(orderM[2]||"").toUpperCase()==="DESC"; rows.sort((a,b)=>{ let va=a[f],vb=b[f]; if(/at$|timestamp/.test(f)){va=new Date(va||0).getTime();vb=new Date(vb||0).getTime();} if(va<vb)return desc?1:-1; if(va>vb)return desc?-1:1; return 0; }); }
+
+    // LIMIT
+    const limitM=sql.match(/LIMIT\s+(\d+)/i);
+    if(limitM) rows=rows.slice(0,parseInt(limitM[1]));
+
+    return { rows, rowCount:rows.length };
   }
 
-  return { rows: [], rowCount: 0 };
-};
+  return { rows:[], rowCount:0 };
+}
 
-const pool = {
-  query: (text, params) => executeQuery(text, params),
-  connect: async () => {
-    return {
-      query: (text, params) => executeQuery(text, params),
-      release: () => {}
-    };
-  },
-  on: () => {}
-};
+// ---------------------------------------------------------------------------
+// Public API
+// ---------------------------------------------------------------------------
+async function query(text, params) {
+  await connectDb();
+  if (useRealDb && pgPool) return pgPool.query(text, params);
+  return emulatedQuery(text, params);
+}
 
-module.exports = {
-  pool,
-  query: (text, params) => executeQuery(text, params),
-};
+async function connect() {
+  await connectDb();
+  if (useRealDb && pgPool) return pgPool.connect();
+  // Emulator client — BEGIN/COMMIT/ROLLBACK are accepted as no-ops
+  return {
+    query:   (text, p) => emulatedQuery(text, p),
+    release: () => {},
+  };
+}
+
+const pool = { query:(t,p)=>query(t,p), connect:()=>connect(), on:()=>{} };
+
+module.exports = { pool, query, connectDb };

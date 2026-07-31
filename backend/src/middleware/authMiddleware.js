@@ -90,6 +90,16 @@ const authMiddleware = async (req, res, next) => {
     next();
   } catch (error) {
     console.error('Auth middleware error:', error);
+    const isDbError =
+      error.code === 'ECONNREFUSED' ||
+      error.code === 'ENOTFOUND'    ||
+      error.code === 'ETIMEDOUT'    ||
+      error.code === '57P03'        ||
+      error.statusCode === 503      ||
+      /ECONNREFUSED|ENOTFOUND|ETIMEDOUT|connection pool/i.test(error.message || '');
+    if (isDbError) {
+      return res.status(503).json({ success: false, message: 'Database not connected' });
+    }
     return res.status(500).json({ success: false, message: 'Internal Server Error in Authentication' });
   }
 };

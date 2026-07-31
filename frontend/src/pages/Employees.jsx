@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '../context/ToastContext';
 import { fetchEmployees, createEmployee, toggleEmployeeStatus, deleteEmployee } from '../services/employee';
+import api from '../services/api';
 import { 
   Users, Plus, Search, Sparkles, Filter, 
   Trash2, Settings2, ShieldCheck, ShieldAlert, X 
@@ -12,7 +13,10 @@ import { useEmployee } from '../context/EmployeeContext';
 const Employees = () => {
   const { selectedEmployee, setSelectedEmployee } = useEmployee();
   const [employees, setEmployees] = useState([]);
+  const [errorState, setErrorState] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [reconnectAttempt, setReconnectAttempt] = useState(0);
+  const [isReconnecting, setIsReconnecting] = useState(false);
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   
@@ -50,18 +54,70 @@ const Employees = () => {
     return avatars[cat] || avatars.Support;
   };
 
-  const loadEmployees = async () => {
+  const loadEmployees = async (retryCount = 0) => {
+    const maxRetries = 5;
     try {
-      setLoading(true);
+      if (retryCount > 0) {
+        setIsReconnecting(true);
+        setReconnectAttempt(retryCount);
+      } else {
+        setLoading(true);
+        setErrorState(null);
+      }
       const res = await fetchEmployees();
       if (res.success) {
         setEmployees(res.data);
+        setIsReconnecting(false);
+        setReconnectAttempt(0);
       }
     } catch (error) {
-      console.error(error);
-      showToast('Failed to fetch AI employee directory.', 'error');
+      console.error('loadEmployees error:', error);
+
+      // Reconnect logic: if backend is down/starting, retry up to 5 times
+      const isNetworkError = !error.response || error.code === 'ERR_NETWORK' || (error.message && error.message.includes('Network Error'));
+      
+      if (isNetworkError && retryCount < maxRetries) {
+        setIsReconnecting(true);
+        setReconnectAttempt(retryCount + 1);
+        console.log(`Backend unreachable, retrying connection (${retryCount + 1}/${maxRetries}) in 1.5s...`);
+        setTimeout(() => {
+          loadEmployees(retryCount + 1);
+        }, 1500);
+        return;
+      }
+
+      setIsReconnecting(false);
+      setReconnectAttempt(0);
+      
+      // Ping health check to see if backend itself is reachable
+      try {
+        const healthRes = await api.get('/health');
+        if (healthRes.status === 200) {
+          // Backend is reachable, so the error must be a database connection issue
+          setErrorState('database_unavailable');
+          showToast('Database is not connected.', 'error');
+        } else {
+          setErrorState('backend_unavailable');
+          showToast('Backend server is not connected.', 'error');
+        }
+      } catch (healthError) {
+        console.error('Health check ping failed:', healthError);
+        if (
+          (healthError.response && healthError.response.status === 503) ||
+          (error.response && error.response.status === 503) ||
+          (error.response && error.response.data && error.response.data.message === 'Database not connected')
+        ) {
+          setErrorState('database_unavailable');
+          showToast('Database is not connected.', 'error');
+        } else {
+          setErrorState('backend_unavailable');
+          showToast('Backend server is not connected.', 'error');
+        }
+      }
     } finally {
-      setLoading(false);
+      if (retryCount === 0 || retryCount >= maxRetries) {
+        setLoading(false);
+      }
     }
   };
 
@@ -195,7 +251,35 @@ const Employees = () => {
       </div>
 
       {/* Workers Grid */}
-      {loading ? (
+      {isReconnecting ? (
+        <div className="text-center py-16 border border-dashed border-border rounded-2xl bg-bg-secondary max-w-xl mx-auto my-8 p-8 shadow-xs">
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto mb-4"></div>
+          <h3 className="text-lg font-bold text-text-primary">Connecting to Backend Service...</h3>
+          <p className="text-xs text-text-secondary mt-2">
+            Attempt {reconnectAttempt} of 5. Re-establishing secure socket connection.
+          </p>
+        </div>
+      ) : errorState ? (
+        <div className="text-center py-16 border border-dashed border-red-500/30 rounded-2xl bg-red-500/5 max-w-xl mx-auto my-8 p-8">
+          <ShieldAlert className="h-12 w-12 text-red-500 mx-auto mb-4 animate-bounce" />
+          <h3 className="text-xl font-bold text-text-primary">
+            {errorState === 'backend_unavailable' ? 'Backend not connected' : 'Database not connected'}
+          </h3>
+          <p className="text-sm text-text-secondary mt-3 leading-relaxed">
+            {errorState === 'backend_unavailable' 
+              ? 'The PersonaForge AI backend server is currently unreachable. Please make sure the local server is running on port 5000.'
+              : 'The database connection is unavailable. Please verify that your database service is active and the connection configuration is set up.'}
+          </p>
+          <div className="mt-8 flex justify-center gap-4">
+            <button
+              onClick={() => loadEmployees(0)}
+              className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-white shadow-md shadow-primary/20 hover:bg-primary-hover hover:shadow-primary/35 transition hover:scale-102 active:scale-98 duration-150"
+            >
+              Retry Connection
+            </button>
+          </div>
+        </div>
+      ) : loading ? (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {[1, 2, 3].map(i => (
             <div key={i} className="h-56 rounded-2xl border border-border bg-bg-secondary p-6 animate-pulse space-y-4">
