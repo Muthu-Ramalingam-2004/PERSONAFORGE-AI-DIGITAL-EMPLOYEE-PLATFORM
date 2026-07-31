@@ -47,6 +47,10 @@ function setupMockAuth() {
   if (savedUser) {
     try {
       currentUser = JSON.parse(savedUser);
+      if (currentUser) {
+        // Re-attach the getIdToken method lost in JSON serialization
+        currentUser.getIdToken = async () => `mock-token-${currentUser.email}-${currentUser.displayName || currentUser.email.split('@')[0]}-${currentUser.uid}`;
+      }
     } catch (e) {
       currentUser = null;
     }
@@ -169,7 +173,10 @@ export const updateDisplayName = async (displayName) => {
 export const getAuthToken = async () => {
   if (!auth.currentUser) return null;
   if (isMockMode) {
-    return auth.currentUser.getIdToken();
+    if (typeof auth.currentUser.getIdToken === 'function') {
+      return auth.currentUser.getIdToken();
+    }
+    return `mock-token-${auth.currentUser.email}-${auth.currentUser.displayName || auth.currentUser.email.split('@')[0]}-${auth.currentUser.uid}`;
   }
   return auth.currentUser.getIdToken(true);
 };

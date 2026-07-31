@@ -35,7 +35,7 @@ const authMiddleware = async (req, res, next) => {
         const parts = token.replace('mock-token-', '').split('-');
         email = parts[0] || 'mock-user@example.com';
         name = parts[1] || 'Mock User';
-        firebaseUid = parts[2] || 'mock-uid-12345';
+        firebaseUid = parts.slice(2).join('-') || 'mock-uid-12345';
         decodedToken = { uid: firebaseUid, email, name };
       } else {
         // Try fallback JWT verification if JWT token is passed

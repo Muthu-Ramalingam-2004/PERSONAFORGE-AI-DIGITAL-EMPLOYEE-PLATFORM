@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { fetchStats, fetchActivities, fetchCharts } from '../services/dashboard';
+import { fetchEmployees } from '../services/employee';
 import { 
   Users, MessageSquare, Clock, Cpu, ArrowUpRight, Plus, 
   Sparkles, ShieldCheck, Activity, Calendar 
@@ -20,6 +21,7 @@ const Dashboard = () => {
   const [stats, setStats] = useState(null);
   const [activities, setActivities] = useState([]);
   const [charts, setCharts] = useState(null);
+  const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Fetch dashboard datasets on mount
@@ -27,15 +29,17 @@ const Dashboard = () => {
     const loadDashboardData = async () => {
       try {
         setLoading(true);
-        const [statsData, activitiesData, chartsData] = await Promise.all([
+        const [statsData, activitiesData, chartsData, employeesData] = await Promise.all([
           fetchStats(),
           fetchActivities(),
-          fetchCharts()
+          fetchCharts(),
+          fetchEmployees()
         ]);
         
         if (statsData.success) setStats(statsData.data);
         if (activitiesData.success) setActivities(activitiesData.data);
         if (chartsData.success) setCharts(chartsData.data);
+        if (employeesData.success) setEmployees(employeesData.data);
       } catch (error) {
         console.error('Failed to load dashboard:', error);
         showToast('Failed to retrieve analytics data from server. Running fallback.', 'error');
@@ -291,14 +295,14 @@ const Dashboard = () => {
               <h3 className="text-base font-extrabold text-text-primary">Digital Employees Status</h3>
               <p className="text-xs text-text-muted">Your active workers and category departments.</p>
             </div>
-            <Link to="/employees" onClick={(e) => { e.preventDefault(); showToast('Employees list unlocks in Module 3!', 'info'); }} className="text-xs font-bold text-primary hover:underline flex items-center gap-0.5">
+            <Link to="/employees" className="text-xs font-bold text-primary hover:underline flex items-center gap-0.5">
               Manage workforce <ArrowUpRight className="h-3.5 w-3.5" />
             </Link>
           </div>
 
           <div className="flex-1 grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {stats?.recentEmployees && stats.recentEmployees.length > 0 ? (
-              stats.recentEmployees.map((emp) => (
+            {employees && employees.length > 0 ? (
+              employees.slice(0, 4).map((emp) => (
                 <div 
                   key={emp.id}
                   className="flex items-center gap-4 rounded-xl border border-border bg-bg-primary/40 p-4 transition-all duration-150 hover:border-primary/30"
