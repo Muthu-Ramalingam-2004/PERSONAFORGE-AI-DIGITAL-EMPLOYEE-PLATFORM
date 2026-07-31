@@ -24,18 +24,18 @@ export const fetchChatMessages = async (chatId) => {
     console.warn('[OFFLINE FALLBACK] fetchChatMessages');
     const mockMessages = {
       'mock-chat-1': [
-        { id: 'msg-1', sender_type: 'user', content: 'What is the leave encashment policy?', created_at: new Date(Date.now() - 3600000).toISOString() },
-        { id: 'msg-2', sender_type: 'ai', content: 'Based on our organization policy, you can encash up to 15 days of accrued privilege leaves at the end of the calendar year.', created_at: new Date(Date.now() - 3500000).toISOString() }
+        { id: 'msg-1', sender: 'user', content: 'What is the leave encashment policy?', created_at: new Date(Date.now() - 3600000).toISOString() },
+        { id: 'msg-2', sender: 'ai', content: 'Based on our organization policy, you can encash up to 15 days of accrued privilege leaves at the end of the calendar year.', created_at: new Date(Date.now() - 3500000).toISOString() }
       ],
       'mock-chat-2': [
-        { id: 'msg-3', sender_type: 'user', content: 'Do you offer custom pricing templates?', created_at: new Date(Date.now() - 1800000).toISOString() },
-        { id: 'msg-4', sender_type: 'ai', content: 'Yes! We offer customizable enterprise tiers matching user usage distributions. Let me fetch standard scales details.', created_at: new Date(Date.now() - 1700000).toISOString() }
+        { id: 'msg-3', sender: 'user', content: 'Do you offer custom pricing templates?', created_at: new Date(Date.now() - 1800000).toISOString() },
+        { id: 'msg-4', sender: 'ai', content: 'Yes! We offer customizable enterprise tiers matching user usage distributions. Let me fetch standard scales details.', created_at: new Date(Date.now() - 1700000).toISOString() }
       ]
     };
     return {
       success: true,
       data: mockMessages[chatId] || [
-        { id: 'msg-default', sender_type: 'ai', content: 'Hello! I am your configured digital worker. How can I assist you today?', created_at: new Date().toISOString() }
+        { id: 'msg-default', sender: 'ai', content: 'Hello! I am your configured digital worker. How can I assist you today?', created_at: new Date().toISOString() }
       ]
     };
   }
@@ -69,8 +69,8 @@ export const sendChatMessage = async (chatId, message) => {
     return {
       success: true,
       data: {
-        userMessage: { id: `msg-u-${Date.now()}`, sender_type: 'user', content: message, created_at: new Date().toISOString() },
-        aiResponse: { id: `msg-a-${Date.now()}`, sender_type: 'ai', content: randomReply, created_at: new Date().toISOString() }
+        userMessage: { id: `msg-u-${Date.now()}`, sender: 'user', content: message, created_at: new Date().toISOString() },
+        aiMessage: { id: `msg-a-${Date.now()}`, sender: 'ai', content: randomReply, created_at: new Date().toISOString() }
       }
     };
   }

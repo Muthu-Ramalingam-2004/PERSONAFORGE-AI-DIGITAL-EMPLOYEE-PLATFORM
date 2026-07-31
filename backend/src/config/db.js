@@ -104,6 +104,30 @@ const resolveVal = (valStr, params) => {
   return trimmed;
 };
 
+const resolveColVal = (colRef, row, defaultTable = '') => {
+  const cleanRef = colRef.trim();
+  const parts = cleanRef.split('.');
+  if (parts.length === 2) {
+    const alias = parts[0].toLowerCase();
+    const field = parts[1].toLowerCase();
+    if (row.hasOwnProperty(`${alias}_${field}`)) {
+      return row[`${alias}_${field}`];
+    }
+    if (row.hasOwnProperty(field)) {
+      return row[field];
+    }
+  } else {
+    const field = cleanRef.toLowerCase();
+    if (row.hasOwnProperty(field)) {
+      return row[field];
+    }
+    if (defaultTable && row.hasOwnProperty(`${defaultTable.toLowerCase()}_${field}`)) {
+      return row[`${defaultTable.toLowerCase()}_${field}`];
+    }
+  }
+  return undefined;
+};
+
 // Simple where clause parser supporting field = $N, field != $N, and, or, ILIKE, IN
 const parseWhereClause = (whereStr) => {
   // Strip trailing sorting/limiting if it leaked
@@ -147,11 +171,8 @@ const parseWhereClause = (whereStr) => {
       return;
     }
 
-    // Strip table prefix if any
-    field = field.split('.').pop().toLowerCase();
-
     conditions.push({
-      field,
+      field: field.trim(),
       op,
       valStr
     });
@@ -160,7 +181,7 @@ const parseWhereClause = (whereStr) => {
   return conditions;
 };
 
-const matchesFilter = (row, filter, params) => {
+const matchesFilter = (row, filter, params, defaultTable = '') => {
   if (!filter || filter.length === 0) return true;
 
   return filter.every(cond => {
@@ -177,10 +198,16 @@ const matchesFilter = (row, filter, params) => {
       return vStr;
     };
 
-    let actual = row[field];
+    let actual = resolveColVal(field, row, defaultTable);
+    
+    // Fallback search check for compatibility
     if (actual === undefined) {
-      if (field === 'user_id' && row.userId !== undefined) actual = row.userId;
-      else if (field === 'employee_id' && row.employeeId !== undefined) actual = row.employeeId;
+      const cleanField = field.split('.').pop().toLowerCase();
+      actual = row[cleanField];
+      if (actual === undefined) {
+        if (cleanField === 'user_id' && row.userId !== undefined) actual = row.userId;
+        else if (cleanField === 'employee_id' && row.employeeId !== undefined) actual = row.employeeId;
+      }
     }
 
     if (op === '=') {
@@ -383,6 +410,16 @@ const executeQuery = async (queryText, params = []) => {
 
     let rows = JSON.parse(JSON.stringify(dbData[tableName] || []));
 
+    // Add prefixes for main table columns
+    const mainPrefix = tableAlias || tableName;
+    rows = rows.map(row => {
+      const newRow = { ...row };
+      Object.keys(row).forEach(k => {
+        newRow[`${mainPrefix}_${k}`] = row[k];
+      });
+      return newRow;
+    });
+
     // Handle JOINS
     const joinMatches = [...sql.matchAll(/(LEFT\s+)?JOIN\s+(\w+)(?:\s+(\w+))?\s+ON\s+([\w.]+)\s*=\s*([\w.]+)/gi)];
     joinMatches.forEach(join => {
@@ -391,27 +428,26 @@ const executeQuery = async (queryText, params = []) => {
       const onLeft = join[4].toLowerCase();
       const onRight = join[5].toLowerCase();
 
-      const leftField = onLeft.split('.')[1];
-      const rightField = onRight.split('.')[1];
       const joinList = dbData[joinTable] || [];
 
       rows = rows.map(row => {
         const matchingRecord = joinList.find(jr => {
-          const lVal = row[leftField] || row[onLeft.split('.')[0] === tableAlias ? leftField : rightField];
-          const rVal = jr[rightField] || jr[onRight.split('.')[0] === joinAlias ? rightField : leftField];
-          return lVal && rVal && lVal === rVal;
+          const lVal = resolveColVal(onLeft, row, tableAlias || tableName);
+          const rVal = resolveColVal(onRight, jr, joinAlias || joinTable);
+          if (lVal !== undefined && rVal !== undefined && lVal === rVal) return true;
+          
+          const lValRev = resolveColVal(onRight, row, tableAlias || tableName);
+          const rValRev = resolveColVal(onLeft, jr, joinAlias || joinTable);
+          return lValRev !== undefined && rValRev !== undefined && lValRev === rValRev;
         });
 
         if (matchingRecord) {
           const merged = { ...row };
+          const prefix = joinAlias || joinTable;
           Object.keys(matchingRecord).forEach(k => {
-            if (k !== 'id' && k !== 'created_at' && k !== 'updated_at') {
-              if (joinAlias) {
-                merged[`${joinAlias}_${k}`] = matchingRecord[k];
-              }
-              if (!merged.hasOwnProperty(k) || joinTable === 'prompts') {
-                merged[k] = matchingRecord[k];
-              }
+            merged[`${prefix}_${k}`] = matchingRecord[k];
+            if (!merged.hasOwnProperty(k) || joinTable === 'prompts') {
+              merged[k] = matchingRecord[k];
             }
           });
           if (joinTable === 'ai_employees') {
@@ -433,7 +469,7 @@ const executeQuery = async (queryText, params = []) => {
     const whereMatch = sql.match(/WHERE\s+(.+?)(?:\s+GROUP\s+BY|\s+ORDER\s+BY|\s+LIMIT|$)/i);
     if (whereMatch) {
       const filter = parseWhereClause(whereMatch[1]);
-      rows = rows.filter(row => matchesFilter(row, filter, params));
+      rows = rows.filter(row => matchesFilter(row, filter, params, tableAlias || tableName));
     }
 
     // Handle aggregates

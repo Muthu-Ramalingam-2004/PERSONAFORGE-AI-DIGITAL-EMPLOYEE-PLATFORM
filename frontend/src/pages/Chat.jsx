@@ -34,10 +34,24 @@ const Chat = () => {
         fetchEmployees()
       ]);
       
-      if (chatsRes.success) setChats(chatsRes.data);
-      if (empsRes.success) setEmployees(empsRes.data.filter(e => e.status === 'active'));
+      if (chatsRes && chatsRes.success && Array.isArray(chatsRes.data)) {
+        setChats(chatsRes.data);
+      } else {
+        console.error('fetchChats failed:', chatsRes);
+        setChats([]);
+      }
+      
+      if (empsRes && empsRes.success && Array.isArray(empsRes.data)) {
+        setEmployees(empsRes.data.filter(e => e.status === 'active'));
+      } else {
+        console.error('fetchEmployees failed:', empsRes);
+        setEmployees([]);
+      }
     } catch (error) {
+      console.error('Error loading initial chat data:', error);
       showToast('Failed to load chat history.', 'error');
+      setChats([]);
+      setEmployees([]);
     } finally {
       setLoadingChats(false);
     }
@@ -57,41 +71,52 @@ const Chat = () => {
   }, [messages, sending]);
 
   const handleSelectChat = async (chat) => {
+    if (!chat) return;
     setActiveChat(chat);
     setMobileView('chat');
     setLoadingMessages(true);
     try {
       const res = await fetchChatMessages(chat.id);
-      if (res.success) {
+      if (res && res.success && Array.isArray(res.data)) {
         setMessages(res.data);
+      } else {
+        console.error('fetchChatMessages failed:', res);
+        setMessages([]);
       }
     } catch (error) {
+      console.error('Error selecting chat:', error);
       showToast('Failed to retrieve messages.', 'error');
+      setMessages([]);
     } finally {
       setLoadingMessages(false);
     }
   };
 
   const handleCreateChat = async (employeeId) => {
+    if (!employeeId) return;
     setSelectorOpen(false);
     try {
       const res = await createChat(employeeId);
-      if (res.success) {
+      if (res && res.success && res.data) {
         const newChat = res.data;
         // Retrieve details of the employee
         const emp = employees.find(e => e.id === employeeId);
         const enrichedChat = {
           ...newChat,
-          employee_name: emp.name,
-          employee_avatar: emp.avatar_url,
-          employee_category: emp.category
+          employee_name: emp ? emp.name : 'AI Assistant',
+          employee_avatar: emp ? emp.avatar_url : '',
+          employee_category: emp ? emp.category : 'General'
         };
         
         setChats(prev => [enrichedChat, ...prev]);
         handleSelectChat(enrichedChat);
         showToast('New session initialized!', 'success');
+      } else {
+        console.error('createChat failed:', res);
+        showToast('Failed to start chat session.', 'error');
       }
     } catch (error) {
+      console.error('Error starting chat:', error);
       showToast('Failed to start chat session.', 'error');
     }
   };
@@ -115,12 +140,43 @@ const Chat = () => {
 
     try {
       const res = await sendChatMessage(activeChat.id, text);
-      if (res.success) {
-        const { aiMessage } = res.data;
-        setMessages(prev => prev.filter(m => m.id !== tempUserMsg.id).concat(tempUserMsg, aiMessage));
+      if (res && res.success && res.data) {
+        const aiMsg = res.data.aiMessage || res.data.aiResponse;
+        if (aiMsg && aiMsg.content) {
+          setMessages(prev => {
+            const filtered = prev.filter(m => m.id !== tempUserMsg.id);
+            const userMsg = res.data.userMessage || tempUserMsg;
+            return [...filtered, userMsg, aiMsg];
+          });
+        } else {
+          console.error('Invalid AI message format in response:', res);
+          showToast('AI is temporarily unavailable.', 'error');
+          setMessages(prev => prev.filter(m => m.id !== tempUserMsg.id).concat(tempUserMsg, {
+            id: `err-${Date.now()}`,
+            sender: 'ai',
+            content: 'AI is temporarily unavailable.',
+            created_at: new Date().toISOString()
+          }));
+        }
+      } else {
+        console.error('API responded with success=false:', res);
+        showToast('AI is temporarily unavailable.', 'error');
+        setMessages(prev => prev.filter(m => m.id !== tempUserMsg.id).concat(tempUserMsg, {
+          id: `err-${Date.now()}`,
+          sender: 'ai',
+          content: 'AI is temporarily unavailable.',
+          created_at: new Date().toISOString()
+        }));
       }
     } catch (error) {
+      console.error('Error sending message:', error);
       showToast('AI response generation failed.', 'error');
+      setMessages(prev => prev.filter(m => m.id !== tempUserMsg.id).concat(tempUserMsg, {
+        id: `err-${Date.now()}`,
+        sender: 'ai',
+        content: 'AI is temporarily unavailable.',
+        created_at: new Date().toISOString()
+      }));
     } finally {
       setSending(false);
     }
