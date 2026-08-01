@@ -51,12 +51,12 @@ function startReconnectionLoop() {
   connectionTimer = setInterval(async () => {
     if (!isConnected && !isConnecting) {
       console.log("⏳ [DATABASE] Retrying connection to PostgreSQL...");
-      await connectDb();
+      await connectDb(1, 1000);
     }
   }, 3000);
 }
 
-const connectDb = async () => {
+const connectDb = async (retries = 5, delayMs = 3000) => {
   if (!hasDbUrl) {
     useRealDb = false;
     isConnected = false;
@@ -64,54 +64,70 @@ const connectDb = async () => {
   }
 
   if (isConnected) return true;
-  if (isConnecting) return false;
+  
+  if (isConnecting) {
+    while (isConnecting) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+    }
+    return isConnected;
+  }
 
   isConnecting = true;
   
-  try {
-    const { Pool } = require("pg");
-    if (!pgPool) {
-      pgPool = new Pool({
-        connectionString:        process.env.DATABASE_URL,
-        connectionTimeoutMillis: 3000,
-        idleTimeoutMillis:       10000,
-        max:                     5,
-      });
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const { Pool } = require("pg");
+      if (!pgPool) {
+        pgPool = new Pool({
+          connectionString:        process.env.DATABASE_URL,
+          connectionTimeoutMillis: 5000,
+          idleTimeoutMillis:       10000,
+          max:                     10,
+        });
 
-      // CRITICAL: Must handle pool errors to prevent uncaughtException crashes
-      pgPool.on('error', (err) => {
-        console.warn('⚠️  [DATABASE] pg pool idle client error (non-fatal):', err.message);
-        isConnected = false;
-        useRealDb = false;
-        startReconnectionLoop();
-      });
+        // CRITICAL: Must handle pool errors to prevent uncaughtException crashes
+        pgPool.on('error', (err) => {
+          console.warn('⚠️  [DATABASE] pg pool idle client error (non-fatal):', err.message);
+          isConnected = false;
+          useRealDb = false;
+          startReconnectionLoop();
+        });
+      }
+
+      const client = await pgPool.connect();
+      await client.query("SELECT 1");
+      isConnected = true;
+      useRealDb = true;
+      isConnecting = false;
+      console.log("✅ [DATABASE] Connected to PostgreSQL successfully.");
+
+      // Run schema initialization
+      await initializeSchema(client);
+      client.release();
+
+      // Stop reconnection loop if active
+      if (connectionTimer) {
+        clearInterval(connectionTimer);
+        connectionTimer = null;
+      }
+      return true;
+    } catch (err) {
+      console.warn(`⚠️  [DATABASE] Connection attempt ${attempt}/${retries} failed: ${err.message}`);
+      if (attempt < retries) {
+        console.log(`⏳ Waiting ${delayMs / 1000}s before retrying...`);
+        await new Promise(resolve => setTimeout(resolve, delayMs));
+      }
     }
-
-    const client = await pgPool.connect();
-    await client.query("SELECT 1");
-    isConnected = true;
-    useRealDb = true;
-    isConnecting = false;
-    console.log("✅ [DATABASE] Connected to PostgreSQL successfully.");
-
-    // Run schema initialization
-    await initializeSchema(client);
-    client.release();
-
-    // Stop reconnection loop if active
-    if (connectionTimer) {
-      clearInterval(connectionTimer);
-      connectionTimer = null;
-    }
-    return true;
-  } catch (err) {
-    isConnecting = false;
-    isConnected = false;
-    useRealDb = false;
-    console.warn("⚠️  [DATABASE] Cannot reach PostgreSQL. Falling back to local emulated DB:", err.message);
-    startReconnectionLoop();
-    return false;
   }
+
+  isConnecting = false;
+  isConnected = false;
+  useRealDb = false;
+  if (retries > 1) {
+    console.error("❌ [DATABASE] Failed to connect to PostgreSQL after multiple attempts.");
+  }
+  startReconnectionLoop();
+  return false;
 };
 
 // ---------------------------------------------------------------------------
@@ -434,17 +450,22 @@ function emulatedQuery(queryText, params=[]) {
 // Public API
 // ---------------------------------------------------------------------------
 async function query(text, params) {
-  if (useRealDb && isConnected && pgPool) {
+  if (hasDbUrl) {
+    if (!isConnected) {
+      const ok = await connectDb(1, 1000);
+      if (!ok) {
+        throw new Error("❌ [DATABASE] Database is currently offline or unreachable. Cannot process query.");
+      }
+    }
     try {
       return await pgPool.query(text, params);
     } catch (err) {
       const isConnError = /connection|closed|refused|timeout|57P01|57P03/i.test(err.message);
       if (isConnError) {
-        console.warn("⚠️  [DATABASE] PostgreSQL connection lost during query. Switching to emulated DB:", err.message);
+        console.warn("⚠️  [DATABASE] PostgreSQL connection lost during query. Attempting reconnect:", err.message);
         isConnected = false;
         useRealDb = false;
         startReconnectionLoop();
-        return emulatedQuery(text, params);
       }
       throw err;
     }
@@ -453,15 +474,14 @@ async function query(text, params) {
 }
 
 async function connect() {
-  if (useRealDb && isConnected && pgPool) {
-    try {
-      return await pgPool.connect();
-    } catch (err) {
-      console.warn("⚠️  [DATABASE] PostgreSQL connection pool checkout failed. Switching to emulator:", err.message);
-      isConnected = false;
-      useRealDb = false;
-      startReconnectionLoop();
+  if (hasDbUrl) {
+    if (!isConnected) {
+      const ok = await connectDb(1, 1000);
+      if (!ok) {
+        throw new Error("❌ [DATABASE] Database is currently offline or unreachable. Cannot establish client connection.");
+      }
     }
+    return await pgPool.connect();
   }
   // Emulator client — BEGIN/COMMIT/ROLLBACK are accepted as no-ops
   return {

@@ -11,9 +11,7 @@ let server;
 (async () => {
   try {
     logger.info('⏳ Initializing database connection...');
-    connectDb().catch(err => {
-      logger.error(`Initial database connection error: ${err.message}`);
-    });
+    await connectDb();
 
     const app = require('./app');
     server = app.listen(PORT, () => {
