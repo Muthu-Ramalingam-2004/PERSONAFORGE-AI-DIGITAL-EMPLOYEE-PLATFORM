@@ -3,6 +3,12 @@ const db = require('../config/db');
 
 const authMiddleware = async (req, res, next) => {
   try {
+    const { getDbState } = require('../config/db');
+    const dbState = getDbState();
+    if (dbState === 'disconnected' || dbState === 'connecting') {
+      return res.status(503).json({ success: false, message: 'Database not connected' });
+    }
+
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return res.status(401).json({ success: false, message: 'Unauthorized: No token provided' });

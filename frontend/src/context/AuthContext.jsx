@@ -23,8 +23,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    // If we are in mock mode, auth.onAuthStateChanged will be a custom mock listener
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    // Support mock authentication onAuthStateChanged method or fallback to Firebase Client SDK
+    const stateCallback = async (user) => {
       setCurrentUser(user);
       
       if (user) {
@@ -41,7 +41,11 @@ export const AuthProvider = ({ children }) => {
         setDbUser(null);
       }
       setLoading(false);
-    });
+    };
+
+    const unsubscribe = typeof auth.onAuthStateChanged === 'function'
+      ? auth.onAuthStateChanged(stateCallback)
+      : onAuthStateChanged(auth, stateCallback);
 
     return unsubscribe;
   }, []);

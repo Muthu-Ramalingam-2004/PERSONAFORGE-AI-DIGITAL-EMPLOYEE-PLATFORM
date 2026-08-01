@@ -8,53 +8,110 @@ const crypto = require("crypto");
 // ---------------------------------------------------------------------------
 // Path to the persistent local JSON "database"
 // ---------------------------------------------------------------------------
-const DB_PATH = path.join(__dirname, "db_emulated.json");
+const DB_PATH = path.join(__dirname, "../../db_emulated.json");
 
 // ---------------------------------------------------------------------------
 // Attempt a real PostgreSQL connection
 // ---------------------------------------------------------------------------
-let useRealDb = false;
-let pgPool    = null;
-let dbCheckPromise = null;
+let pgPool = null;
+const hasDbUrl = !!process.env.DATABASE_URL;
+let useRealDb = hasDbUrl;
+let isConnected = false;
+let isConnecting = false;
+let connectionTimer = null;
+let schemaInitialized = false;
 
-const connectDb = () => {
-  if (!dbCheckPromise) {
-    dbCheckPromise = (async () => {
-      if (process.env.DATABASE_URL) {
-        try {
-          const { Pool } = require("pg");
-          pgPool = new Pool({
-            connectionString:        process.env.DATABASE_URL,
-            connectionTimeoutMillis: 3000,
-            idleTimeoutMillis:       10000,
-            max:                     5,
-          });
-
-          // CRITICAL: Must handle pool errors to prevent uncaughtException crashes
-          pgPool.on('error', (err) => {
-            console.warn('⚠️  [DATABASE] pg pool idle client error (non-fatal):', err.message);
-          });
-
-          const client = await pgPool.connect();
-          await client.query("SELECT 1");
-          client.release();
-          useRealDb = true;
-          console.log("✅ [DATABASE] Connected to PostgreSQL successfully.");
-          return true;
-        } catch (err) {
-          console.warn("⚠️  [DATABASE] Cannot reach PostgreSQL:", err.message);
-          console.warn("⚠️  [DATABASE] Using local emulated DB (db_emulated.json).");
-          useRealDb = false;
-          return false;
-        }
-      } else {
-        console.warn("⚠️  [DATABASE] DATABASE_URL missing. Using local emulated DB.");
-        useRealDb = false;
-        return false;
-      }
-    })();
+// Function to initialize tables in PostgreSQL using schema.sql
+async function initializeSchema(client) {
+  if (schemaInitialized) return;
+  try {
+    const schemaPath = path.join(__dirname, "../../../docs/schema.sql");
+    if (fs.existsSync(schemaPath)) {
+      console.log("⏳ [DATABASE] Initializing PostgreSQL tables from schema.sql...");
+      const schemaSql = fs.readFileSync(schemaPath, "utf8");
+      
+      // Execute the schema SQL DDL
+      await client.query(schemaSql);
+      schemaInitialized = true;
+      console.log("✅ [DATABASE] PostgreSQL database tables initialized successfully.");
+    } else {
+      console.warn("⚠️  [DATABASE] schema.sql not found at", schemaPath);
+    }
+  } catch (err) {
+    console.error("❌ [DATABASE] Error initializing database schema:", err.message);
   }
-  return dbCheckPromise;
+}
+
+// Start periodic reconnection loop
+function startReconnectionLoop() {
+  if (!hasDbUrl) return;
+  if (connectionTimer) return;
+
+  console.log("⏳ [DATABASE] Starting background reconnection loop...");
+  connectionTimer = setInterval(async () => {
+    if (!isConnected && !isConnecting) {
+      console.log("⏳ [DATABASE] Retrying connection to PostgreSQL...");
+      await connectDb();
+    }
+  }, 3000);
+}
+
+const connectDb = async () => {
+  if (!hasDbUrl) {
+    useRealDb = false;
+    isConnected = false;
+    return false;
+  }
+
+  if (isConnected) return true;
+  if (isConnecting) return false;
+
+  isConnecting = true;
+  
+  try {
+    const { Pool } = require("pg");
+    if (!pgPool) {
+      pgPool = new Pool({
+        connectionString:        process.env.DATABASE_URL,
+        connectionTimeoutMillis: 3000,
+        idleTimeoutMillis:       10000,
+        max:                     5,
+      });
+
+      // CRITICAL: Must handle pool errors to prevent uncaughtException crashes
+      pgPool.on('error', (err) => {
+        console.warn('⚠️  [DATABASE] pg pool idle client error (non-fatal):', err.message);
+        isConnected = false;
+        useRealDb = false;
+        startReconnectionLoop();
+      });
+    }
+
+    const client = await pgPool.connect();
+    await client.query("SELECT 1");
+    isConnected = true;
+    useRealDb = true;
+    isConnecting = false;
+    console.log("✅ [DATABASE] Connected to PostgreSQL successfully.");
+
+    // Run schema initialization
+    await initializeSchema(client);
+    client.release();
+
+    // Stop reconnection loop if active
+    if (connectionTimer) {
+      clearInterval(connectionTimer);
+      connectionTimer = null;
+    }
+    return true;
+  } catch (err) {
+    isConnecting = false;
+    isConnected = false;
+    useRealDb = false;
+    console.warn("⚠️  [DATABASE] Cannot reach PostgreSQL. Falling back to local emulated DB:", err.message);
+    startReconnectionLoop();
+    return false;
+  }
 };
 
 // ---------------------------------------------------------------------------
@@ -377,14 +434,35 @@ function emulatedQuery(queryText, params=[]) {
 // Public API
 // ---------------------------------------------------------------------------
 async function query(text, params) {
-  await connectDb();
-  if (useRealDb && pgPool) return pgPool.query(text, params);
+  if (useRealDb && isConnected && pgPool) {
+    try {
+      return await pgPool.query(text, params);
+    } catch (err) {
+      const isConnError = /connection|closed|refused|timeout|57P01|57P03/i.test(err.message);
+      if (isConnError) {
+        console.warn("⚠️  [DATABASE] PostgreSQL connection lost during query. Switching to emulated DB:", err.message);
+        isConnected = false;
+        useRealDb = false;
+        startReconnectionLoop();
+        return emulatedQuery(text, params);
+      }
+      throw err;
+    }
+  }
   return emulatedQuery(text, params);
 }
 
 async function connect() {
-  await connectDb();
-  if (useRealDb && pgPool) return pgPool.connect();
+  if (useRealDb && isConnected && pgPool) {
+    try {
+      return await pgPool.connect();
+    } catch (err) {
+      console.warn("⚠️  [DATABASE] PostgreSQL connection pool checkout failed. Switching to emulator:", err.message);
+      isConnected = false;
+      useRealDb = false;
+      startReconnectionLoop();
+    }
+  }
   // Emulator client — BEGIN/COMMIT/ROLLBACK are accepted as no-ops
   return {
     query:   (text, p) => emulatedQuery(text, p),
@@ -394,4 +472,10 @@ async function connect() {
 
 const pool = { query:(t,p)=>query(t,p), connect:()=>connect(), on:()=>{} };
 
-module.exports = { pool, query, connectDb };
+function getDbState() {
+  if (!hasDbUrl) return "emulated";
+  if (isConnected) return "connected";
+  return "emulated";
+}
+
+module.exports = { pool, query, connectDb, getDbState };

@@ -37,8 +37,10 @@ router.use('/admin', adminRoutes);
 
 // Health check endpoint
 router.get('/health', (req, res) => {
+  const { getDbState } = require('../config/db');
   res.status(200).json({
     status: 'healthy',
+    database: getDbState(),
     timestamp: new Date(),
     uptime: process.uptime()
   });

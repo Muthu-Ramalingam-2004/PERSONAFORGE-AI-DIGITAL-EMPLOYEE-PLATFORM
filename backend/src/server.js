@@ -10,8 +10,10 @@ let server;
 
 (async () => {
   try {
-    logger.info('⏳ Connecting to database...');
-    await connectDb();
+    logger.info('⏳ Initializing database connection...');
+    connectDb().catch(err => {
+      logger.error(`Initial database connection error: ${err.message}`);
+    });
 
     const app = require('./app');
     server = app.listen(PORT, () => {

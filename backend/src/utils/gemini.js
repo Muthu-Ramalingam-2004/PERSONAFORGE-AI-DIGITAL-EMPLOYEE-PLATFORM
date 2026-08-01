@@ -29,12 +29,7 @@ const generateResponse = async (systemPrompt, userMessage, history = [], params 
     const maxOutputTokens = params.maxTokens !== undefined ? parseInt(params.maxTokens) : 1000;
 
     if (!genAI) {
-      // Return simulated/mock response in offline dev mode
-      await new Promise(resolve => setTimeout(resolve, 800)); // simulate latency
-      return `[OFFLINE DEMO MODE] Hello! I am your AI digital employee responding in mock mode because GEMINI_API_KEY is not configured in the backend environment. 
-
-Here is what you sent me: "${userMessage}"
-System Prompt configured: "${systemPrompt.substring(0, 100)}..."`;
+      throw new Error("GEMINI_API_KEY is not configured. Please add your Google Gemini API key to your environment variables (.env) to enable AI inference.");
     }
 
     // Use gemini-1.5-flash as it is fast, stable, and cost-efficient for SaaS apps

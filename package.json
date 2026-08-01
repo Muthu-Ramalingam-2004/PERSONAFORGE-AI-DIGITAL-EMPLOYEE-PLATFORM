@@ -11,6 +11,7 @@
     "backend": "npm run dev --workspace=backend",
     "client": "npm run dev --workspace=frontend",
     "server": "npm run dev --workspace=backend",
+    "predev": "powershell -Command \"Get-NetTCPConnection -LocalPort 3000, 5000 -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }; exit 0\"",
     "dev": "concurrently \"npm run backend\" \"npm run frontend\""
   },
   "devDependencies": {

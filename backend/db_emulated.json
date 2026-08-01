@@ -1,0 +1,1404 @@
+{
+  "users": [
+    {
+      "id": "5c7981f9-92c4-4b08-9db2-cf370dd6d5c6",
+      "created_at": "2026-07-31T06:13:04.911Z",
+      "updated_at": "2026-07-31T06:13:04.911Z",
+      "firebase_uid": "Agent",
+      "email": "agent",
+      "name": "test@example.com"
+    },
+    {
+      "id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9",
+      "created_at": "2026-07-31T06:16:48.867Z",
+      "updated_at": "2026-07-31T06:16:48.867Z",
+      "firebase_uid": "mock-uid-muthuramalingam9344gmailcom",
+      "email": "muthuramalingam9344@gmail.com",
+      "name": "muthuramalingam9344"
+    },
+    {
+      "id": "13e3b3ea-f04a-4995-bdf5-1b7a3999c6dc",
+      "created_at": "2026-07-31T06:24:56.015Z",
+      "updated_at": "2026-07-31T06:24:56.015Z",
+      "firebase_uid": "mock-uid-12345",
+      "email": "muthuramalingam9344@gmail.com",
+      "name": "Muthu"
+    },
+    {
+      "id": "6ec06b93-3b73-448b-a36d-36561e9b8b39",
+      "created_at": "2026-07-31T10:08:57.971Z",
+      "updated_at": "2026-07-31T10:08:57.971Z",
+      "firebase_uid": "mock-uid-testexamplecom",
+      "email": "test@example.com",
+      "name": "test"
+    }
+  ],
+  "ai_employees": [
+    {
+      "id": "588110ad-3b7b-4aaf-ad35-ac193ceba841",
+      "created_at": "2026-07-31T06:13:05.084Z",
+      "updated_at": "2026-07-31T06:13:05.084Z",
+      "user_id": "5c7981f9-92c4-4b08-9db2-cf370dd6d5c6",
+      "name": "Sophia Williams",
+      "avatar_url": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&h=150&q=80",
+      "category": "HR",
+      "status": "active"
+    },
+    {
+      "id": "ee193c14-7852-4db7-b14e-d307c577dfa6",
+      "created_at": "2026-07-31T06:13:05.089Z",
+      "updated_at": "2026-07-31T06:13:05.089Z",
+      "user_id": "5c7981f9-92c4-4b08-9db2-cf370dd6d5c6",
+      "name": "David Miller",
+      "avatar_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80",
+      "category": "Sales",
+      "status": "active"
+    },
+    {
+      "id": "8e74e4c9-f0c6-4471-a89d-fa4a66d58782",
+      "created_at": "2026-07-31T06:14:16.024Z",
+      "updated_at": "2026-07-31T06:14:16.024Z",
+      "user_id": "5c7981f9-92c4-4b08-9db2-cf370dd6d5c6",
+      "name": "AI Support Helper",
+      "avatar_url": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80",
+      "category": "Support",
+      "status": "active"
+    },
+    {
+      "id": "28259f01-781f-4498-9d98-face09496776",
+      "created_at": "2026-07-31T06:16:51.559Z",
+      "updated_at": "2026-07-31T06:16:51.559Z",
+      "user_id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9",
+      "name": "Sophia Williams",
+      "avatar_url": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&h=150&q=80",
+      "category": "HR",
+      "status": "active"
+    },
+    {
+      "id": "5f236606-789a-4aa2-8983-0e6af6879c3c",
+      "created_at": "2026-07-31T06:16:51.563Z",
+      "updated_at": "2026-07-31T06:16:51.563Z",
+      "user_id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9",
+      "name": "David Miller",
+      "avatar_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80",
+      "category": "Sales",
+      "status": "active"
+    },
+    {
+      "id": "c14154b9-aa51-4cc3-a78f-56283255e39f",
+      "created_at": "2026-07-31T06:17:24.158Z",
+      "updated_at": "2026-07-31T11:14:23.760Z",
+      "user_id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9",
+      "name": "john",
+      "avatar_url": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80",
+      "category": "Support",
+      "status": "active"
+    },
+    {
+      "id": "3d1f8c82-f3a5-4e3e-b5c1-818a8725c4c4",
+      "created_at": "2026-07-31T06:25:16.301Z",
+      "updated_at": "2026-07-31T06:25:16.301Z",
+      "user_id": "13e3b3ea-f04a-4995-bdf5-1b7a3999c6dc",
+      "name": "Sophia Williams",
+      "avatar_url": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&h=150&q=80",
+      "category": "HR",
+      "status": "active"
+    },
+    {
+      "id": "d462ce2b-c21c-494b-b912-5647ba09d9e2",
+      "created_at": "2026-07-31T06:25:16.307Z",
+      "updated_at": "2026-07-31T06:25:16.307Z",
+      "user_id": "13e3b3ea-f04a-4995-bdf5-1b7a3999c6dc",
+      "name": "David Miller",
+      "avatar_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80",
+      "category": "Sales",
+      "status": "active"
+    },
+    {
+      "id": "902392df-a5c7-4033-a242-bf29c63078f4",
+      "created_at": "2026-07-31T06:27:53.032Z",
+      "updated_at": "2026-07-31T06:27:53.032Z",
+      "user_id": "13e3b3ea-f04a-4995-bdf5-1b7a3999c6dc",
+      "name": "Roman",
+      "avatar_url": "https://i.pinimg.com/236x/fe/f9/c2/fef9c2c1cd4a648038cec022a4e95940.jpg",
+      "category": "Support",
+      "status": "active"
+    },
+    {
+      "id": "3e0c4797-a366-45bd-a0a3-f6a1cd120e83",
+      "created_at": "2026-07-31T10:11:22.651Z",
+      "updated_at": "2026-07-31T10:11:22.651Z",
+      "user_id": "6ec06b93-3b73-448b-a36d-36561e9b8b39",
+      "name": "Test Worker",
+      "avatar_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80",
+      "category": "Recruiter",
+      "status": "active"
+    },
+    {
+      "id": "0697918e-8833-47be-a16b-cc1375666135",
+      "created_at": "2026-07-31T11:33:21.442Z",
+      "updated_at": "2026-07-31T11:35:34.259Z",
+      "user_id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9",
+      "name": "Verifier Bot",
+      "avatar_url": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&h=150&q=80",
+      "category": "HR",
+      "status": "active"
+    },
+    {
+      "id": "d95bab49-7db9-4213-ac7e-f27d4f8d3313",
+      "created_at": "2026-07-31T11:41:41.013Z",
+      "updated_at": "2026-07-31T11:41:41.013Z",
+      "user_id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9",
+      "name": "Roman",
+      "avatar_url": "https://i.pinimg.com/236x/fe/f9/c2/fef9c2c1cd4a648038cec022a4e95940.jpg",
+      "category": "Finance",
+      "status": "active"
+    },
+    {
+      "id": "13e1e6a9-f889-4922-ab55-e50d16239321",
+      "created_at": "2026-08-01T06:40:55.505Z",
+      "updated_at": "2026-08-01T06:40:55.505Z",
+      "user_id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9",
+      "name": "John cena ",
+      "avatar_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUBWhrQ3NK9MjUh6FfKKLbYh_ePKNmddcj6MkDUlICX6MSX-F55Dhrk4tQ&s=10",
+      "category": "Recruiter",
+      "status": "active"
+    }
+  ],
+  "prompts": [
+    {
+      "id": "b4978171-6348-4d29-996b-eec896774c67",
+      "created_at": "2026-07-31T06:13:05.092Z",
+      "updated_at": "2026-07-31T06:13:05.092Z",
+      "employee_id": "588110ad-3b7b-4aaf-ad35-ac193ceba841",
+      "system_prompt": "You are an HR Assistant.",
+      "personality_prompt": "Helpful, warm, professional",
+      "goal": "Handle HR queries",
+      "tone": "professional",
+      "temperature": 0.7,
+      "max_tokens": 1000
+    },
+    {
+      "id": "2c873d50-fbc7-473f-8d15-1b9f5519be94",
+      "created_at": "2026-07-31T06:13:05.095Z",
+      "updated_at": "2026-07-31T06:13:05.095Z",
+      "employee_id": "ee193c14-7852-4db7-b14e-d307c577dfa6",
+      "system_prompt": "You are a Sales executive.",
+      "personality_prompt": "Enthusiastic, persuasive, sharp",
+      "goal": "Sell PersonaForge subscriptions",
+      "tone": "persuasive",
+      "temperature": 0.85,
+      "max_tokens": 1000
+    },
+    {
+      "id": "f28fed0a-6334-4976-ba2f-ae7d114859f1",
+      "created_at": "2026-07-31T06:14:16.027Z",
+      "updated_at": "2026-07-31T06:14:16.027Z",
+      "employee_id": "8e74e4c9-f0c6-4471-a89d-fa4a66d58782",
+      "system_prompt": "You are a friendly customer support AI worker.",
+      "personality_prompt": "",
+      "goal": "",
+      "tone": "professional",
+      "temperature": 0.7,
+      "max_tokens": 1000
+    },
+    {
+      "id": "b6d568e5-0d6a-470f-93ff-f10aed65e33a",
+      "created_at": "2026-07-31T06:16:51.568Z",
+      "updated_at": "2026-07-31T06:16:51.568Z",
+      "employee_id": "28259f01-781f-4498-9d98-face09496776",
+      "system_prompt": "You are an HR Assistant.",
+      "personality_prompt": "Helpful, warm, professional",
+      "goal": "Handle HR queries",
+      "tone": "professional",
+      "temperature": 0.7,
+      "max_tokens": 1000
+    },
+    {
+      "id": "1c2474ae-2f9a-428e-8303-23a5cc388f4f",
+      "created_at": "2026-07-31T06:16:51.573Z",
+      "updated_at": "2026-07-31T06:16:51.573Z",
+      "employee_id": "5f236606-789a-4aa2-8983-0e6af6879c3c",
+      "system_prompt": "You are a Sales executive.",
+      "personality_prompt": "Enthusiastic, persuasive, sharp",
+      "goal": "Sell PersonaForge subscriptions",
+      "tone": "persuasive",
+      "temperature": 0.85,
+      "max_tokens": 1000
+    },
+    {
+      "id": "f514925e-bfe1-4e90-b05b-22cde63bbf48",
+      "created_at": "2026-07-31T06:17:24.163Z",
+      "updated_at": "2026-07-31T11:14:23.764Z",
+      "employee_id": "c14154b9-aa51-4cc3-a78f-56283255e39f",
+      "system_prompt": "support assistant v2",
+      "personality_prompt": "",
+      "goal": "",
+      "tone": "professional",
+      "temperature": 0.7,
+      "max_tokens": 1000
+    },
+    {
+      "id": "fd868680-2e84-4b42-bab8-7cbaea1d42d3",
+      "created_at": "2026-07-31T06:25:16.312Z",
+      "updated_at": "2026-07-31T06:25:16.312Z",
+      "employee_id": "3d1f8c82-f3a5-4e3e-b5c1-818a8725c4c4",
+      "system_prompt": "You are an HR Assistant.",
+      "personality_prompt": "Helpful, warm, professional",
+      "goal": "Handle HR queries",
+      "tone": "professional",
+      "temperature": 0.7,
+      "max_tokens": 1000
+    },
+    {
+      "id": "31c7218e-7355-48b3-afe0-bff27f41d1cc",
+      "created_at": "2026-07-31T06:25:16.317Z",
+      "updated_at": "2026-07-31T06:25:16.317Z",
+      "employee_id": "d462ce2b-c21c-494b-b912-5647ba09d9e2",
+      "system_prompt": "You are a Sales executive.",
+      "personality_prompt": "Enthusiastic, persuasive, sharp",
+      "goal": "Sell PersonaForge subscriptions",
+      "tone": "persuasive",
+      "temperature": 0.85,
+      "max_tokens": 1000
+    },
+    {
+      "id": "4084d771-60a4-461e-b3fb-986e9da6b500",
+      "created_at": "2026-07-31T06:27:53.036Z",
+      "updated_at": "2026-07-31T06:27:53.036Z",
+      "employee_id": "902392df-a5c7-4033-a242-bf29c63078f4",
+      "system_prompt": "support assistant",
+      "personality_prompt": "",
+      "goal": "",
+      "tone": "professional",
+      "temperature": 0.7,
+      "max_tokens": 1000
+    },
+    {
+      "id": "059e999e-cb3c-4b11-ad4d-0bb8be44d2b3",
+      "created_at": "2026-07-31T10:11:22.660Z",
+      "updated_at": "2026-07-31T10:11:22.660Z",
+      "employee_id": "3e0c4797-a366-45bd-a0a3-f6a1cd120e83",
+      "system_prompt": "You are a test worker.",
+      "personality_prompt": "",
+      "goal": "",
+      "tone": "professional",
+      "temperature": 0.7,
+      "max_tokens": 1000
+    },
+    {
+      "id": "dabca283-0afe-4f5f-8351-18293a800d8b",
+      "created_at": "2026-07-31T11:33:21.456Z",
+      "updated_at": "2026-07-31T11:35:34.266Z",
+      "employee_id": "0697918e-8833-47be-a16b-cc1375666135",
+      "system_prompt": "Help with human resources",
+      "personality_prompt": "friendly",
+      "goal": "help workers",
+      "tone": "professional",
+      "temperature": 0.7,
+      "max_tokens": 1000
+    },
+    {
+      "id": "5d507de5-e5c5-413f-a190-a2d69758e300",
+      "created_at": "2026-07-31T11:41:41.018Z",
+      "updated_at": "2026-07-31T11:41:41.018Z",
+      "employee_id": "d95bab49-7db9-4213-ac7e-f27d4f8d3313",
+      "system_prompt": "you are an finance assistant",
+      "personality_prompt": "",
+      "goal": "",
+      "tone": "concise",
+      "temperature": 0.7,
+      "max_tokens": 1000
+    },
+    {
+      "id": "084b36fb-a0a1-4923-88a6-bf71dcc01673",
+      "created_at": "2026-08-01T06:40:55.510Z",
+      "updated_at": "2026-08-01T06:40:55.510Z",
+      "employee_id": "13e1e6a9-f889-4922-ab55-e50d16239321",
+      "system_prompt": "you are an recruitar assistant",
+      "personality_prompt": "",
+      "goal": "",
+      "tone": "professional",
+      "temperature": 0.7,
+      "max_tokens": 1000
+    }
+  ],
+  "chats": [
+    {
+      "id": "3a97de34-8d21-4b54-9ce8-d22a5c7fd535",
+      "created_at": "2026-07-25T06:13:05.104Z",
+      "updated_at": "2026-07-31T06:13:05.104Z",
+      "user_id": "5c7981f9-92c4-4b08-9db2-cf370dd6d5c6",
+      "employee_id": "ee193c14-7852-4db7-b14e-d307c577dfa6",
+      "title": "Inquiry about pricing"
+    },
+    {
+      "id": "83bf3eef-ebb8-4ad1-b46a-dcc8f01b73df",
+      "created_at": "2026-07-26T06:13:05.113Z",
+      "updated_at": "2026-07-31T06:13:05.112Z",
+      "user_id": "5c7981f9-92c4-4b08-9db2-cf370dd6d5c6",
+      "employee_id": "ee193c14-7852-4db7-b14e-d307c577dfa6",
+      "title": "Inquiry about pricing"
+    },
+    {
+      "id": "e42c6eb8-e6ae-42e2-aba1-a755bd2e8043",
+      "created_at": "2026-07-27T06:13:05.135Z",
+      "updated_at": "2026-07-31T06:13:05.135Z",
+      "user_id": "5c7981f9-92c4-4b08-9db2-cf370dd6d5c6",
+      "employee_id": "ee193c14-7852-4db7-b14e-d307c577dfa6",
+      "title": "Inquiry about pricing"
+    },
+    {
+      "id": "f4357d0a-e3e7-4aaf-b73b-be00cfcaef3b",
+      "created_at": "2026-07-28T06:13:05.145Z",
+      "updated_at": "2026-07-31T06:13:05.145Z",
+      "user_id": "5c7981f9-92c4-4b08-9db2-cf370dd6d5c6",
+      "employee_id": "ee193c14-7852-4db7-b14e-d307c577dfa6",
+      "title": "Inquiry about pricing"
+    },
+    {
+      "id": "42eba0ee-e1c2-46b7-b9de-14cab9766a01",
+      "created_at": "2026-07-29T06:13:05.158Z",
+      "updated_at": "2026-07-31T06:13:05.158Z",
+      "user_id": "5c7981f9-92c4-4b08-9db2-cf370dd6d5c6",
+      "employee_id": "ee193c14-7852-4db7-b14e-d307c577dfa6",
+      "title": "Inquiry about pricing"
+    },
+    {
+      "id": "e4101a72-9b71-4d94-af92-a455613ba018",
+      "created_at": "2026-07-30T06:13:05.181Z",
+      "updated_at": "2026-07-31T06:13:05.181Z",
+      "user_id": "5c7981f9-92c4-4b08-9db2-cf370dd6d5c6",
+      "employee_id": "ee193c14-7852-4db7-b14e-d307c577dfa6",
+      "title": "Inquiry about pricing"
+    },
+    {
+      "id": "a3711c60-518c-4895-95bb-58d7f8f0d678",
+      "created_at": "2026-07-31T06:13:05.197Z",
+      "updated_at": "2026-07-31T06:13:05.197Z",
+      "user_id": "5c7981f9-92c4-4b08-9db2-cf370dd6d5c6",
+      "employee_id": "ee193c14-7852-4db7-b14e-d307c577dfa6",
+      "title": "Inquiry about pricing"
+    },
+    {
+      "id": "1f01c1c7-790c-42c3-a16c-1e44b73fe4e9",
+      "created_at": "2026-07-25T06:16:51.582Z",
+      "updated_at": "2026-07-31T06:16:51.582Z",
+      "user_id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9",
+      "employee_id": "5f236606-789a-4aa2-8983-0e6af6879c3c",
+      "title": "Inquiry about pricing"
+    },
+    {
+      "id": "7c1d1094-7098-48c2-9e6e-ad521ac3b968",
+      "created_at": "2026-07-26T06:16:51.591Z",
+      "updated_at": "2026-07-31T06:16:51.591Z",
+      "user_id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9",
+      "employee_id": "5f236606-789a-4aa2-8983-0e6af6879c3c",
+      "title": "Inquiry about pricing"
+    },
+    {
+      "id": "0eff9fc6-bfe5-49fa-b0bb-2767d55307be",
+      "created_at": "2026-07-27T06:16:51.598Z",
+      "updated_at": "2026-07-31T06:16:51.598Z",
+      "user_id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9",
+      "employee_id": "5f236606-789a-4aa2-8983-0e6af6879c3c",
+      "title": "Inquiry about pricing"
+    },
+    {
+      "id": "c30220d1-c2e2-46be-be45-bc00c576a787",
+      "created_at": "2026-07-28T06:16:51.607Z",
+      "updated_at": "2026-07-31T06:16:51.607Z",
+      "user_id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9",
+      "employee_id": "5f236606-789a-4aa2-8983-0e6af6879c3c",
+      "title": "Inquiry about pricing"
+    },
+    {
+      "id": "a60b88eb-8e61-429c-8efb-36b0a11eb74a",
+      "created_at": "2026-07-29T06:16:51.615Z",
+      "updated_at": "2026-07-31T06:16:51.615Z",
+      "user_id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9",
+      "employee_id": "5f236606-789a-4aa2-8983-0e6af6879c3c",
+      "title": "Inquiry about pricing"
+    },
+    {
+      "id": "854b1458-45f2-4d9b-92aa-bf0d8bba6785",
+      "created_at": "2026-07-30T06:16:51.624Z",
+      "updated_at": "2026-07-31T06:16:51.624Z",
+      "user_id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9",
+      "employee_id": "5f236606-789a-4aa2-8983-0e6af6879c3c",
+      "title": "Inquiry about pricing"
+    },
+    {
+      "id": "835331f3-67f5-4787-9fc4-127f2e51044a",
+      "created_at": "2026-07-31T06:16:51.631Z",
+      "updated_at": "2026-07-31T06:16:51.631Z",
+      "user_id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9",
+      "employee_id": "5f236606-789a-4aa2-8983-0e6af6879c3c",
+      "title": "Inquiry about pricing"
+    },
+    {
+      "id": "54a75a9c-bfe6-4848-921f-4cb87234ab7a",
+      "created_at": "2026-07-25T06:25:16.330Z",
+      "updated_at": "2026-07-31T06:25:16.329Z",
+      "user_id": "13e3b3ea-f04a-4995-bdf5-1b7a3999c6dc",
+      "employee_id": "d462ce2b-c21c-494b-b912-5647ba09d9e2",
+      "title": "Inquiry about pricing"
+    },
+    {
+      "id": "87956e58-4b0e-4e23-a2c3-3e24716acd66",
+      "created_at": "2026-07-26T06:25:16.343Z",
+      "updated_at": "2026-07-31T06:25:16.343Z",
+      "user_id": "13e3b3ea-f04a-4995-bdf5-1b7a3999c6dc",
+      "employee_id": "d462ce2b-c21c-494b-b912-5647ba09d9e2",
+      "title": "Inquiry about pricing"
+    },
+    {
+      "id": "0321fd0c-7ba2-4d44-bb3b-ddd4abc8fd9d",
+      "created_at": "2026-07-27T06:25:16.356Z",
+      "updated_at": "2026-07-31T06:25:16.356Z",
+      "user_id": "13e3b3ea-f04a-4995-bdf5-1b7a3999c6dc",
+      "employee_id": "d462ce2b-c21c-494b-b912-5647ba09d9e2",
+      "title": "Inquiry about pricing"
+    },
+    {
+      "id": "5050f5ea-37fa-492d-8a1c-12b24b37082c",
+      "created_at": "2026-07-28T06:25:16.371Z",
+      "updated_at": "2026-07-31T06:25:16.371Z",
+      "user_id": "13e3b3ea-f04a-4995-bdf5-1b7a3999c6dc",
+      "employee_id": "d462ce2b-c21c-494b-b912-5647ba09d9e2",
+      "title": "Inquiry about pricing"
+    },
+    {
+      "id": "fa601dc1-29e9-417a-9ae1-6113a200e4f3",
+      "created_at": "2026-07-29T06:25:16.386Z",
+      "updated_at": "2026-07-31T06:25:16.386Z",
+      "user_id": "13e3b3ea-f04a-4995-bdf5-1b7a3999c6dc",
+      "employee_id": "d462ce2b-c21c-494b-b912-5647ba09d9e2",
+      "title": "Inquiry about pricing"
+    },
+    {
+      "id": "429039f4-f443-429a-b194-98699e35a005",
+      "created_at": "2026-07-30T06:25:16.401Z",
+      "updated_at": "2026-07-31T06:25:16.401Z",
+      "user_id": "13e3b3ea-f04a-4995-bdf5-1b7a3999c6dc",
+      "employee_id": "d462ce2b-c21c-494b-b912-5647ba09d9e2",
+      "title": "Inquiry about pricing"
+    },
+    {
+      "id": "83a82f1f-8de4-4472-a88e-4bb45ac540cc",
+      "created_at": "2026-07-31T06:25:16.420Z",
+      "updated_at": "2026-07-31T06:25:16.420Z",
+      "user_id": "13e3b3ea-f04a-4995-bdf5-1b7a3999c6dc",
+      "employee_id": "d462ce2b-c21c-494b-b912-5647ba09d9e2",
+      "title": "Inquiry about pricing"
+    },
+    {
+      "id": "671951d6-8de9-4d26-b543-88a13f44d5c8",
+      "created_at": "2026-07-31T06:28:07.698Z",
+      "updated_at": "2026-07-31T10:42:17.998Z",
+      "user_id": "13e3b3ea-f04a-4995-bdf5-1b7a3999c6dc",
+      "employee_id": "902392df-a5c7-4033-a242-bf29c63078f4",
+      "title": "Chat with Roman"
+    },
+    {
+      "id": "2fa85e63-1c30-4600-b951-feb972f6c572",
+      "created_at": "2026-07-31T10:28:52.772Z",
+      "updated_at": "2026-07-31T10:28:52.772Z",
+      "user_id": "13e3b3ea-f04a-4995-bdf5-1b7a3999c6dc",
+      "employee_id": "902392df-a5c7-4033-a242-bf29c63078f4",
+      "title": "Chat with Roman"
+    },
+    {
+      "id": "9f6ed760-4659-4d61-bca3-391ed3f39bea",
+      "created_at": "2026-07-31T10:36:58.819Z",
+      "updated_at": "2026-07-31T10:36:58.830Z",
+      "user_id": "13e3b3ea-f04a-4995-bdf5-1b7a3999c6dc",
+      "employee_id": "902392df-a5c7-4033-a242-bf29c63078f4",
+      "title": "Chat with Roman"
+    },
+    {
+      "id": "d0f821c5-4395-4a30-8349-000429832f8b",
+      "created_at": "2026-07-31T10:38:44.481Z",
+      "updated_at": "2026-07-31T10:39:00.649Z",
+      "user_id": "13e3b3ea-f04a-4995-bdf5-1b7a3999c6dc",
+      "employee_id": "902392df-a5c7-4033-a242-bf29c63078f4",
+      "title": "Chat with Roman"
+    },
+    {
+      "id": "73fcb995-8e60-493c-a5ea-33fdd770c795",
+      "created_at": "2026-07-31T10:46:12.118Z",
+      "updated_at": "2026-07-31T10:46:12.150Z",
+      "user_id": "13e3b3ea-f04a-4995-bdf5-1b7a3999c6dc",
+      "employee_id": "902392df-a5c7-4033-a242-bf29c63078f4",
+      "title": "Chat with Roman"
+    },
+    {
+      "id": "1ca493db-33b0-4af0-b1b5-3b829bd78b7c",
+      "created_at": "2026-07-31T10:46:49.105Z",
+      "updated_at": "2026-07-31T10:46:49.140Z",
+      "user_id": "13e3b3ea-f04a-4995-bdf5-1b7a3999c6dc",
+      "employee_id": "902392df-a5c7-4033-a242-bf29c63078f4",
+      "title": "Chat with Roman"
+    },
+    {
+      "id": "9af2de04-0d0a-46ce-8de8-cb52c001af76",
+      "created_at": "2026-07-31T10:49:25.767Z",
+      "updated_at": "2026-07-31T10:49:25.804Z",
+      "user_id": "13e3b3ea-f04a-4995-bdf5-1b7a3999c6dc",
+      "employee_id": "902392df-a5c7-4033-a242-bf29c63078f4",
+      "title": "Chat with Roman"
+    },
+    {
+      "id": "07b5aab4-642c-409e-881d-d7485180d268",
+      "created_at": "2026-07-31T10:52:06.083Z",
+      "updated_at": "2026-07-31T10:52:08.147Z",
+      "user_id": "13e3b3ea-f04a-4995-bdf5-1b7a3999c6dc",
+      "employee_id": "902392df-a5c7-4033-a242-bf29c63078f4",
+      "title": "Chat with Roman"
+    },
+    {
+      "id": "ac961d54-24ad-4638-a729-f0c2191c9f82",
+      "created_at": "2026-07-31T11:33:56.126Z",
+      "updated_at": "2026-07-31T11:34:20.645Z",
+      "user_id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9",
+      "employee_id": "0697918e-8833-47be-a16b-cc1375666135",
+      "title": "Chat with Verifier Bot"
+    },
+    {
+      "id": "d3896346-2b9b-422c-9b4e-2daa223226f8",
+      "created_at": "2026-07-31T11:41:51.982Z",
+      "updated_at": "2026-07-31T11:41:57.985Z",
+      "user_id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9",
+      "employee_id": "d95bab49-7db9-4213-ac7e-f27d4f8d3313",
+      "title": "Chat with Roman"
+    },
+    {
+      "id": "cb8a407e-9d35-4a91-801b-8c6739478825",
+      "created_at": "2026-08-01T05:51:43.189Z",
+      "updated_at": "2026-08-01T05:52:29.615Z",
+      "user_id": "6ec06b93-3b73-448b-a36d-36561e9b8b39",
+      "employee_id": "3e0c4797-a366-45bd-a0a3-f6a1cd120e83",
+      "title": "Chat with Test Worker"
+    }
+  ],
+  "messages": [
+    {
+      "id": "f8c63821-b602-4df0-8e96-0bf3bce161a1",
+      "created_at": "2026-07-25T06:13:05.107Z",
+      "updated_at": "2026-07-31T06:13:05.107Z",
+      "chat_id": "3a97de34-8d21-4b54-9ce8-d22a5c7fd535",
+      "sender": "user",
+      "content": "What are the plans?"
+    },
+    {
+      "id": "44e8707f-649e-4aef-9497-4f0ddbc0d4d3",
+      "created_at": "2026-07-26T06:13:05.121Z",
+      "updated_at": "2026-07-31T06:13:05.121Z",
+      "chat_id": "83bf3eef-ebb8-4ad1-b46a-dcc8f01b73df",
+      "sender": "user",
+      "content": "What are the plans?"
+    },
+    {
+      "id": "08613264-9bbf-4133-a79e-4a13f17a8e84",
+      "created_at": "2026-07-27T06:13:05.140Z",
+      "updated_at": "2026-07-31T06:13:05.140Z",
+      "chat_id": "e42c6eb8-e6ae-42e2-aba1-a755bd2e8043",
+      "sender": "user",
+      "content": "What are the plans?"
+    },
+    {
+      "id": "47664bc5-41e4-4115-9a51-9ee3890ec7c3",
+      "created_at": "2026-07-28T06:13:05.149Z",
+      "updated_at": "2026-07-31T06:13:05.149Z",
+      "chat_id": "f4357d0a-e3e7-4aaf-b73b-be00cfcaef3b",
+      "sender": "user",
+      "content": "What are the plans?"
+    },
+    {
+      "id": "5699b626-400f-4189-b1b1-1a13adec017b",
+      "created_at": "2026-07-29T06:13:05.172Z",
+      "updated_at": "2026-07-31T06:13:05.172Z",
+      "chat_id": "42eba0ee-e1c2-46b7-b9de-14cab9766a01",
+      "sender": "user",
+      "content": "What are the plans?"
+    },
+    {
+      "id": "ada853e4-ca7f-42d1-89b1-9f1bf09b793c",
+      "created_at": "2026-07-30T06:13:05.189Z",
+      "updated_at": "2026-07-31T06:13:05.189Z",
+      "chat_id": "e4101a72-9b71-4d94-af92-a455613ba018",
+      "sender": "user",
+      "content": "What are the plans?"
+    },
+    {
+      "id": "b3019b49-447b-4026-a711-f40eae8d97a9",
+      "created_at": "2026-07-31T06:13:05.245Z",
+      "updated_at": "2026-07-31T06:13:05.245Z",
+      "chat_id": "a3711c60-518c-4895-95bb-58d7f8f0d678",
+      "sender": "user",
+      "content": "What are the plans?"
+    },
+    {
+      "id": "309f0ce0-4785-43f0-91fa-cc7b8a65799a",
+      "created_at": "2026-07-25T06:16:51.584Z",
+      "updated_at": "2026-07-31T06:16:51.584Z",
+      "chat_id": "1f01c1c7-790c-42c3-a16c-1e44b73fe4e9",
+      "sender": "user",
+      "content": "What are the plans?"
+    },
+    {
+      "id": "39e58d01-3b1a-487c-b309-5b374cb8115f",
+      "created_at": "2026-07-26T06:16:51.593Z",
+      "updated_at": "2026-07-31T06:16:51.593Z",
+      "chat_id": "7c1d1094-7098-48c2-9e6e-ad521ac3b968",
+      "sender": "user",
+      "content": "What are the plans?"
+    },
+    {
+      "id": "396cb75e-4daa-4362-a331-b907143bf8d5",
+      "created_at": "2026-07-27T06:16:51.601Z",
+      "updated_at": "2026-07-31T06:16:51.601Z",
+      "chat_id": "0eff9fc6-bfe5-49fa-b0bb-2767d55307be",
+      "sender": "user",
+      "content": "What are the plans?"
+    },
+    {
+      "id": "fc8cb9ce-3605-49d7-ad33-81fb69e54568",
+      "created_at": "2026-07-28T06:16:51.609Z",
+      "updated_at": "2026-07-31T06:16:51.609Z",
+      "chat_id": "c30220d1-c2e2-46be-be45-bc00c576a787",
+      "sender": "user",
+      "content": "What are the plans?"
+    },
+    {
+      "id": "caa1e7ed-0202-447d-904d-01f40e01d4d6",
+      "created_at": "2026-07-29T06:16:51.618Z",
+      "updated_at": "2026-07-31T06:16:51.618Z",
+      "chat_id": "a60b88eb-8e61-429c-8efb-36b0a11eb74a",
+      "sender": "user",
+      "content": "What are the plans?"
+    },
+    {
+      "id": "934279ab-88f0-4623-9bc5-7cd214092dc6",
+      "created_at": "2026-07-30T06:16:51.626Z",
+      "updated_at": "2026-07-31T06:16:51.626Z",
+      "chat_id": "854b1458-45f2-4d9b-92aa-bf0d8bba6785",
+      "sender": "user",
+      "content": "What are the plans?"
+    },
+    {
+      "id": "9a662149-d6a7-4a4e-9ccc-8edfb5e50bb3",
+      "created_at": "2026-07-31T06:16:51.639Z",
+      "updated_at": "2026-07-31T06:16:51.639Z",
+      "chat_id": "835331f3-67f5-4787-9fc4-127f2e51044a",
+      "sender": "user",
+      "content": "What are the plans?"
+    },
+    {
+      "id": "59468579-a7aa-4d9a-96a5-18da6323f820",
+      "created_at": "2026-07-25T06:25:16.335Z",
+      "updated_at": "2026-07-31T06:25:16.334Z",
+      "chat_id": "54a75a9c-bfe6-4848-921f-4cb87234ab7a",
+      "sender": "user",
+      "content": "What are the plans?"
+    },
+    {
+      "id": "6e345398-9b30-4f7f-b451-64927f4f9910",
+      "created_at": "2026-07-26T06:25:16.346Z",
+      "updated_at": "2026-07-31T06:25:16.346Z",
+      "chat_id": "87956e58-4b0e-4e23-a2c3-3e24716acd66",
+      "sender": "user",
+      "content": "What are the plans?"
+    },
+    {
+      "id": "92f0fbb3-7e78-494d-9315-a2c457d15e12",
+      "created_at": "2026-07-27T06:25:16.360Z",
+      "updated_at": "2026-07-31T06:25:16.360Z",
+      "chat_id": "0321fd0c-7ba2-4d44-bb3b-ddd4abc8fd9d",
+      "sender": "user",
+      "content": "What are the plans?"
+    },
+    {
+      "id": "f2d3c2aa-9090-4e06-a06d-6101c7529e59",
+      "created_at": "2026-07-28T06:25:16.376Z",
+      "updated_at": "2026-07-31T06:25:16.376Z",
+      "chat_id": "5050f5ea-37fa-492d-8a1c-12b24b37082c",
+      "sender": "user",
+      "content": "What are the plans?"
+    },
+    {
+      "id": "6f63dd42-4233-4829-9d1b-5644f411c43e",
+      "created_at": "2026-07-29T06:25:16.390Z",
+      "updated_at": "2026-07-31T06:25:16.390Z",
+      "chat_id": "fa601dc1-29e9-417a-9ae1-6113a200e4f3",
+      "sender": "user",
+      "content": "What are the plans?"
+    },
+    {
+      "id": "a66169c0-776c-4e22-a30a-06c8956a71f1",
+      "created_at": "2026-07-30T06:25:16.407Z",
+      "updated_at": "2026-07-31T06:25:16.407Z",
+      "chat_id": "429039f4-f443-429a-b194-98699e35a005",
+      "sender": "user",
+      "content": "What are the plans?"
+    },
+    {
+      "id": "5b1e0fc5-f0c9-4505-81c6-03153fac0222",
+      "created_at": "2026-07-31T06:25:16.427Z",
+      "updated_at": "2026-07-31T06:25:16.427Z",
+      "chat_id": "83a82f1f-8de4-4472-a88e-4bb45ac540cc",
+      "sender": "user",
+      "content": "What are the plans?"
+    },
+    {
+      "id": "3a0f3739-f09c-4b58-a55e-d345efa59265",
+      "created_at": "2026-07-31T06:28:12.118Z",
+      "updated_at": "2026-07-31T06:28:12.118Z",
+      "chat_id": "671951d6-8de9-4d26-b543-88a13f44d5c8",
+      "sender": "user",
+      "content": "hi"
+    },
+    {
+      "id": "0e11b2a1-ed9e-488d-aa19-65dec5087fdb",
+      "created_at": "2026-07-31T06:28:35.820Z",
+      "updated_at": "2026-07-31T06:28:35.820Z",
+      "chat_id": "671951d6-8de9-4d26-b543-88a13f44d5c8",
+      "sender": "user",
+      "content": "how are you"
+    },
+    {
+      "id": "b1819a25-2c9d-44be-877c-a4b12102a7e8",
+      "created_at": "2026-07-31T06:28:37.693Z",
+      "updated_at": "2026-07-31T06:28:37.693Z",
+      "chat_id": "671951d6-8de9-4d26-b543-88a13f44d5c8",
+      "sender": "user",
+      "content": "how are you"
+    },
+    {
+      "id": "974fe395-e575-4880-b4e0-bbc177b2af26",
+      "created_at": "2026-07-31T06:29:41.317Z",
+      "updated_at": "2026-07-31T06:29:41.317Z",
+      "chat_id": "671951d6-8de9-4d26-b543-88a13f44d5c8",
+      "sender": "user",
+      "content": "hlo"
+    },
+    {
+      "id": "d7c9ae82-8e06-4a33-9ca3-8b62c83a4908",
+      "created_at": "2026-07-31T06:29:43.460Z",
+      "updated_at": "2026-07-31T06:29:43.460Z",
+      "chat_id": "671951d6-8de9-4d26-b543-88a13f44d5c8",
+      "sender": "user",
+      "content": "hlo"
+    },
+    {
+      "id": "ff978ea7-4198-41cd-89da-5079edd4fcc4",
+      "created_at": "2026-07-31T06:51:53.545Z",
+      "updated_at": "2026-07-31T06:51:53.545Z",
+      "chat_id": "671951d6-8de9-4d26-b543-88a13f44d5c8",
+      "sender": "user",
+      "content": "hi"
+    },
+    {
+      "id": "3d7b0269-0436-498a-90e4-aa3968f13ac3",
+      "created_at": "2026-07-31T06:51:56.226Z",
+      "updated_at": "2026-07-31T06:51:56.226Z",
+      "chat_id": "671951d6-8de9-4d26-b543-88a13f44d5c8",
+      "sender": "user",
+      "content": "hi"
+    },
+    {
+      "id": "8b6945f5-2eaf-465c-8ddd-eff62a9553e5",
+      "created_at": "2026-07-31T10:36:58.829Z",
+      "updated_at": "2026-07-31T10:36:58.829Z",
+      "chat_id": "9f6ed760-4659-4d61-bca3-391ed3f39bea",
+      "sender": "user",
+      "content": "Hello, introduce yourself."
+    },
+    {
+      "id": "f46b96b1-b41c-408f-9682-aad633857534",
+      "created_at": "2026-07-31T10:38:07.402Z",
+      "updated_at": "2026-07-31T10:38:07.402Z",
+      "chat_id": "671951d6-8de9-4d26-b543-88a13f44d5c8",
+      "sender": "user",
+      "content": "Hello, introduce yourself."
+    },
+    {
+      "id": "3924f05c-6e70-4de3-a6d5-e9c8e3c789ae",
+      "created_at": "2026-07-31T10:39:00.645Z",
+      "updated_at": "2026-07-31T10:39:00.645Z",
+      "chat_id": "d0f821c5-4395-4a30-8349-000429832f8b",
+      "sender": "user",
+      "content": "Hello"
+    },
+    {
+      "id": "a7276691-5616-407c-949b-e2eac1bf52ee",
+      "created_at": "2026-07-31T10:40:10.953Z",
+      "updated_at": "2026-07-31T10:40:10.954Z",
+      "chat_id": "671951d6-8de9-4d26-b543-88a13f44d5c8",
+      "sender": "user",
+      "content": "Hello, introduce yourself."
+    },
+    {
+      "id": "eed083e1-a10b-4380-8466-0027cf0aab03",
+      "created_at": "2026-07-31T10:40:11.759Z",
+      "updated_at": "2026-07-31T10:40:11.759Z",
+      "chat_id": "671951d6-8de9-4d26-b543-88a13f44d5c8",
+      "sender": "ai",
+      "content": "[OFFLINE DEMO MODE] Hello! I am your AI digital employee responding in mock mode because GEMINI_API_KEY is not configured in the backend environment. \n\nHere is what you sent me: \"Hello, introduce yourself.\"\nSystem Prompt configured: \"support assistant...\""
+    },
+    {
+      "id": "b5f12290-6fc6-4fee-8de7-5da5c18fec45",
+      "created_at": "2026-07-31T10:42:17.996Z",
+      "updated_at": "2026-07-31T10:42:17.996Z",
+      "chat_id": "671951d6-8de9-4d26-b543-88a13f44d5c8",
+      "sender": "user",
+      "content": "Hello"
+    },
+    {
+      "id": "66e29856-3596-4bc1-bdb2-b4787beb79d5",
+      "created_at": "2026-07-31T10:46:12.147Z",
+      "updated_at": "2026-07-31T10:46:12.147Z",
+      "chat_id": "73fcb995-8e60-493c-a5ea-33fdd770c795",
+      "sender": "user",
+      "content": "Hello"
+    },
+    {
+      "id": "8ef46b8f-facf-4cce-a706-3edf28ed6b42",
+      "created_at": "2026-07-31T10:46:49.137Z",
+      "updated_at": "2026-07-31T10:46:49.137Z",
+      "chat_id": "1ca493db-33b0-4af0-b1b5-3b829bd78b7c",
+      "sender": "user",
+      "content": "Hi"
+    },
+    {
+      "id": "51bc7970-918a-47e9-a112-6a50af9c5921",
+      "created_at": "2026-07-31T10:49:25.801Z",
+      "updated_at": "2026-07-31T10:49:25.801Z",
+      "chat_id": "9af2de04-0d0a-46ce-8de8-cb52c001af76",
+      "sender": "user",
+      "content": "Hi"
+    },
+    {
+      "id": "17365d40-0d09-4b21-829c-0eea966eb3e4",
+      "created_at": "2026-07-31T10:52:08.145Z",
+      "updated_at": "2026-07-31T10:52:08.145Z",
+      "chat_id": "07b5aab4-642c-409e-881d-d7485180d268",
+      "sender": "user",
+      "content": "Hi there"
+    },
+    {
+      "id": "9a768ae9-bba5-4057-a6c2-775bcc9ea70c",
+      "created_at": "2026-07-31T11:34:20.640Z",
+      "updated_at": "2026-07-31T11:34:20.640Z",
+      "chat_id": "ac961d54-24ad-4638-a729-f0c2191c9f82",
+      "sender": "user",
+      "content": "Hello, explain your goal"
+    },
+    {
+      "id": "1b1b3ebf-797c-4930-a107-bdf6497e9a13",
+      "created_at": "2026-07-31T11:34:21.468Z",
+      "updated_at": "2026-07-31T11:34:21.468Z",
+      "chat_id": "ac961d54-24ad-4638-a729-f0c2191c9f82",
+      "sender": "ai",
+      "content": "[OFFLINE DEMO MODE] Hello! I am your AI digital employee responding in mock mode because GEMINI_API_KEY is not configured in the backend environment. \n\nHere is what you sent me: \"Hello, explain your goal\"\nSystem Prompt configured: \"\n      Help with human resources\n      \n      Personality: Helpful assistant\n      Goal: help worker...\""
+    },
+    {
+      "id": "618b70ba-1a08-420b-a3c1-6a5fff2a8f0b",
+      "created_at": "2026-07-31T11:41:57.982Z",
+      "updated_at": "2026-07-31T11:41:57.982Z",
+      "chat_id": "d3896346-2b9b-422c-9b4e-2daa223226f8",
+      "sender": "user",
+      "content": "hii"
+    },
+    {
+      "id": "c67044c7-24e7-46b5-85fa-ba8f6c3e8642",
+      "created_at": "2026-07-31T11:41:58.798Z",
+      "updated_at": "2026-07-31T11:41:58.798Z",
+      "chat_id": "d3896346-2b9b-422c-9b4e-2daa223226f8",
+      "sender": "ai",
+      "content": "[OFFLINE DEMO MODE] Hello! I am your AI digital employee responding in mock mode because GEMINI_API_KEY is not configured in the backend environment. \n\nHere is what you sent me: \"hii\"\nSystem Prompt configured: \"\n      you are an finance assistant\n      \n      Personality: Helpful assistant\n      Goal: Address ...\""
+    },
+    {
+      "id": "0f62d94c-b543-4c74-8acc-b5ae33a207b2",
+      "created_at": "2026-08-01T05:52:29.610Z",
+      "updated_at": "2026-08-01T05:52:29.610Z",
+      "chat_id": "cb8a407e-9d35-4a91-801b-8c6739478825",
+      "sender": "user",
+      "content": "Hello, Test Worker!"
+    },
+    {
+      "id": "ae3fd05b-0956-46e6-9cad-c13053d2d995",
+      "created_at": "2026-08-01T05:52:29.628Z",
+      "updated_at": "2026-08-01T05:52:29.628Z",
+      "chat_id": "cb8a407e-9d35-4a91-801b-8c6739478825",
+      "sender": "ai",
+      "content": "I apologize, but I encountered an error executing my cognitive system. Details: AI inference failed: GEMINI_API_KEY is not configured. Please add your Google Gemini API key to your environment variables (.env) to enable AI inference."
+    }
+  ],
+  "documents": [],
+  "settings": [
+    {
+      "id": "444b514f-a5be-40cd-a1de-4c2a8bc6871c",
+      "created_at": "2026-07-31T06:13:04.921Z",
+      "updated_at": "2026-07-31T06:13:04.921Z",
+      "user_id": "5c7981f9-92c4-4b08-9db2-cf370dd6d5c6"
+    },
+    {
+      "id": "618bff9e-e22e-4eb3-95c0-b5a02b843c27",
+      "created_at": "2026-07-31T06:13:05.098Z",
+      "updated_at": "2026-07-31T06:13:05.098Z",
+      "user_id": "5c7981f9-92c4-4b08-9db2-cf370dd6d5c6",
+      "theme": "dark",
+      "api_keys": "'{}'::jsonb",
+      "notification_settings": "'{\"email\": true, \"push\": false}'::jsonb) ON CONFLICT (user_id"
+    },
+    {
+      "id": "0d78c2d8-ffdd-4d41-877d-886407e69864",
+      "created_at": "2026-07-31T06:16:48.875Z",
+      "updated_at": "2026-07-31T06:16:48.875Z",
+      "user_id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9"
+    },
+    {
+      "id": "3987c76b-6084-4c26-b94f-b51c2b08f589",
+      "created_at": "2026-07-31T06:16:51.576Z",
+      "updated_at": "2026-07-31T06:16:51.576Z",
+      "user_id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9",
+      "theme": "dark",
+      "api_keys": "'{}'::jsonb",
+      "notification_settings": "'{\"email\": true, \"push\": false}'::jsonb) ON CONFLICT (user_id"
+    },
+    {
+      "id": "74c4a591-a98f-4536-8f00-c06064bc89b6",
+      "created_at": "2026-07-31T06:24:56.020Z",
+      "updated_at": "2026-07-31T06:24:56.020Z",
+      "user_id": "13e3b3ea-f04a-4995-bdf5-1b7a3999c6dc"
+    },
+    {
+      "id": "1656bba1-af58-406b-98a8-866feaee6797",
+      "created_at": "2026-07-31T06:25:16.321Z",
+      "updated_at": "2026-07-31T06:25:16.321Z",
+      "user_id": "13e3b3ea-f04a-4995-bdf5-1b7a3999c6dc",
+      "theme": "dark",
+      "api_keys": "'{}'::jsonb",
+      "notification_settings": "'{\"email\": true, \"push\": false}'::jsonb) ON CONFLICT (user_id"
+    },
+    {
+      "id": "075e688e-1539-4fae-9428-5499348faff9",
+      "created_at": "2026-07-31T10:08:57.979Z",
+      "updated_at": "2026-07-31T10:08:57.979Z",
+      "user_id": "6ec06b93-3b73-448b-a36d-36561e9b8b39"
+    }
+  ],
+  "analytics": [
+    {
+      "id": "161d2825-2ce2-4fdc-a045-da98eb361fa6",
+      "created_at": "2026-07-31T06:13:05.110Z",
+      "updated_at": "2026-07-31T06:13:05.110Z",
+      "user_id": "5c7981f9-92c4-4b08-9db2-cf370dd6d5c6",
+      "employee_id": "ee193c14-7852-4db7-b14e-d307c577dfa6",
+      "usage_count": 1,
+      "response_time": 666,
+      "tokens_used": 142,
+      "timestamp": "2026-07-25T06:13:05.110Z"
+    },
+    {
+      "id": "c3b9ff88-d183-4e3a-b518-6b03aca92cba",
+      "created_at": "2026-07-31T06:13:05.124Z",
+      "updated_at": "2026-07-31T06:13:05.124Z",
+      "user_id": "5c7981f9-92c4-4b08-9db2-cf370dd6d5c6",
+      "employee_id": "ee193c14-7852-4db7-b14e-d307c577dfa6",
+      "usage_count": 1,
+      "response_time": 797,
+      "tokens_used": 193,
+      "timestamp": "2026-07-26T06:13:05.124Z"
+    },
+    {
+      "id": "f43c75cf-4c1c-48bb-8827-3166213de603",
+      "created_at": "2026-07-31T06:13:05.143Z",
+      "updated_at": "2026-07-31T06:13:05.143Z",
+      "user_id": "5c7981f9-92c4-4b08-9db2-cf370dd6d5c6",
+      "employee_id": "ee193c14-7852-4db7-b14e-d307c577dfa6",
+      "usage_count": 1,
+      "response_time": 521,
+      "tokens_used": 219,
+      "timestamp": "2026-07-27T06:13:05.143Z"
+    },
+    {
+      "id": "9fdb0511-d30d-4609-9af4-b5484e725b12",
+      "created_at": "2026-07-31T06:13:05.152Z",
+      "updated_at": "2026-07-31T06:13:05.152Z",
+      "user_id": "5c7981f9-92c4-4b08-9db2-cf370dd6d5c6",
+      "employee_id": "ee193c14-7852-4db7-b14e-d307c577dfa6",
+      "usage_count": 1,
+      "response_time": 444,
+      "tokens_used": 147,
+      "timestamp": "2026-07-28T06:13:05.152Z"
+    },
+    {
+      "id": "c87e53d5-2cfd-4b4e-9443-f205a1a997e7",
+      "created_at": "2026-07-31T06:13:05.175Z",
+      "updated_at": "2026-07-31T06:13:05.175Z",
+      "user_id": "5c7981f9-92c4-4b08-9db2-cf370dd6d5c6",
+      "employee_id": "ee193c14-7852-4db7-b14e-d307c577dfa6",
+      "usage_count": 1,
+      "response_time": 483,
+      "tokens_used": 283,
+      "timestamp": "2026-07-29T06:13:05.175Z"
+    },
+    {
+      "id": "a08bda95-780a-4f1e-bc44-cf93ff669849",
+      "created_at": "2026-07-31T06:13:05.194Z",
+      "updated_at": "2026-07-31T06:13:05.194Z",
+      "user_id": "5c7981f9-92c4-4b08-9db2-cf370dd6d5c6",
+      "employee_id": "ee193c14-7852-4db7-b14e-d307c577dfa6",
+      "usage_count": 1,
+      "response_time": 1031,
+      "tokens_used": 219,
+      "timestamp": "2026-07-30T06:13:05.194Z"
+    },
+    {
+      "id": "6a2b7327-0c01-47ce-9a4f-1114c3abcbae",
+      "created_at": "2026-07-31T06:13:05.288Z",
+      "updated_at": "2026-07-31T06:13:05.288Z",
+      "user_id": "5c7981f9-92c4-4b08-9db2-cf370dd6d5c6",
+      "employee_id": "ee193c14-7852-4db7-b14e-d307c577dfa6",
+      "usage_count": 1,
+      "response_time": 1010,
+      "tokens_used": 254,
+      "timestamp": "2026-07-31T06:13:05.288Z"
+    },
+    {
+      "id": "78caeac0-1cdb-435a-85b6-f80c9f7c0a2b",
+      "created_at": "2026-07-31T06:16:51.588Z",
+      "updated_at": "2026-07-31T06:16:51.588Z",
+      "user_id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9",
+      "employee_id": "5f236606-789a-4aa2-8983-0e6af6879c3c",
+      "usage_count": 1,
+      "response_time": 573,
+      "tokens_used": 178,
+      "timestamp": "2026-07-25T06:16:51.588Z"
+    },
+    {
+      "id": "85e23640-84b5-4d0e-8394-3e6991842300",
+      "created_at": "2026-07-31T06:16:51.595Z",
+      "updated_at": "2026-07-31T06:16:51.596Z",
+      "user_id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9",
+      "employee_id": "5f236606-789a-4aa2-8983-0e6af6879c3c",
+      "usage_count": 1,
+      "response_time": 1108,
+      "tokens_used": 298,
+      "timestamp": "2026-07-26T06:16:51.596Z"
+    },
+    {
+      "id": "3c4adb01-4da2-4db8-abd5-3a73089bdaae",
+      "created_at": "2026-07-31T06:16:51.605Z",
+      "updated_at": "2026-07-31T06:16:51.605Z",
+      "user_id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9",
+      "employee_id": "5f236606-789a-4aa2-8983-0e6af6879c3c",
+      "usage_count": 1,
+      "response_time": 489,
+      "tokens_used": 273,
+      "timestamp": "2026-07-27T06:16:51.605Z"
+    },
+    {
+      "id": "4ee0c07c-5665-411f-8f77-b3037b8d01dd",
+      "created_at": "2026-07-31T06:16:51.612Z",
+      "updated_at": "2026-07-31T06:16:51.612Z",
+      "user_id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9",
+      "employee_id": "5f236606-789a-4aa2-8983-0e6af6879c3c",
+      "usage_count": 1,
+      "response_time": 850,
+      "tokens_used": 152,
+      "timestamp": "2026-07-28T06:16:51.612Z"
+    },
+    {
+      "id": "d69aed6d-a955-43de-a7d7-c7b4bee140d4",
+      "created_at": "2026-07-31T06:16:51.622Z",
+      "updated_at": "2026-07-31T06:16:51.622Z",
+      "user_id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9",
+      "employee_id": "5f236606-789a-4aa2-8983-0e6af6879c3c",
+      "usage_count": 1,
+      "response_time": 421,
+      "tokens_used": 203,
+      "timestamp": "2026-07-29T06:16:51.622Z"
+    },
+    {
+      "id": "d47c2903-7293-4028-9164-ed9ca25c23de",
+      "created_at": "2026-07-31T06:16:51.629Z",
+      "updated_at": "2026-07-31T06:16:51.629Z",
+      "user_id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9",
+      "employee_id": "5f236606-789a-4aa2-8983-0e6af6879c3c",
+      "usage_count": 1,
+      "response_time": 687,
+      "tokens_used": 150,
+      "timestamp": "2026-07-30T06:16:51.629Z"
+    },
+    {
+      "id": "20b3af5f-f9d6-40c9-80fd-a4b28eebc0b0",
+      "created_at": "2026-07-31T06:16:51.643Z",
+      "updated_at": "2026-07-31T06:16:51.643Z",
+      "user_id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9",
+      "employee_id": "5f236606-789a-4aa2-8983-0e6af6879c3c",
+      "usage_count": 1,
+      "response_time": 1169,
+      "tokens_used": 273,
+      "timestamp": "2026-07-31T06:16:51.644Z"
+    },
+    {
+      "id": "3d732f7a-5889-40a8-a9d4-568f28ea0e76",
+      "created_at": "2026-07-31T06:25:16.338Z",
+      "updated_at": "2026-07-31T06:25:16.338Z",
+      "user_id": "13e3b3ea-f04a-4995-bdf5-1b7a3999c6dc",
+      "employee_id": "d462ce2b-c21c-494b-b912-5647ba09d9e2",
+      "usage_count": 1,
+      "response_time": 1143,
+      "tokens_used": 243,
+      "timestamp": "2026-07-25T06:25:16.339Z"
+    },
+    {
+      "id": "081a35d6-3e4a-469b-9505-69b2a643ace4",
+      "created_at": "2026-07-31T06:25:16.351Z",
+      "updated_at": "2026-07-31T06:25:16.352Z",
+      "user_id": "13e3b3ea-f04a-4995-bdf5-1b7a3999c6dc",
+      "employee_id": "d462ce2b-c21c-494b-b912-5647ba09d9e2",
+      "usage_count": 1,
+      "response_time": 1006,
+      "tokens_used": 185,
+      "timestamp": "2026-07-26T06:25:16.352Z"
+    },
+    {
+      "id": "c68e30e0-9dac-4a41-862a-0ce4a3e4ef8a",
+      "created_at": "2026-07-31T06:25:16.366Z",
+      "updated_at": "2026-07-31T06:25:16.366Z",
+      "user_id": "13e3b3ea-f04a-4995-bdf5-1b7a3999c6dc",
+      "employee_id": "d462ce2b-c21c-494b-b912-5647ba09d9e2",
+      "usage_count": 1,
+      "response_time": 1062,
+      "tokens_used": 250,
+      "timestamp": "2026-07-27T06:25:16.366Z"
+    },
+    {
+      "id": "0d14f4c1-0ebb-4dc3-85de-7f66d64a2853",
+      "created_at": "2026-07-31T06:25:16.380Z",
+      "updated_at": "2026-07-31T06:25:16.380Z",
+      "user_id": "13e3b3ea-f04a-4995-bdf5-1b7a3999c6dc",
+      "employee_id": "d462ce2b-c21c-494b-b912-5647ba09d9e2",
+      "usage_count": 1,
+      "response_time": 872,
+      "tokens_used": 259,
+      "timestamp": "2026-07-28T06:25:16.381Z"
+    },
+    {
+      "id": "21295217-4668-4219-a4f8-b5437f899555",
+      "created_at": "2026-07-31T06:25:16.395Z",
+      "updated_at": "2026-07-31T06:25:16.395Z",
+      "user_id": "13e3b3ea-f04a-4995-bdf5-1b7a3999c6dc",
+      "employee_id": "d462ce2b-c21c-494b-b912-5647ba09d9e2",
+      "usage_count": 1,
+      "response_time": 930,
+      "tokens_used": 225,
+      "timestamp": "2026-07-29T06:25:16.395Z"
+    },
+    {
+      "id": "e3fcb86a-e5f4-4d4c-9c08-bfc369da4a50",
+      "created_at": "2026-07-31T06:25:16.411Z",
+      "updated_at": "2026-07-31T06:25:16.411Z",
+      "user_id": "13e3b3ea-f04a-4995-bdf5-1b7a3999c6dc",
+      "employee_id": "d462ce2b-c21c-494b-b912-5647ba09d9e2",
+      "usage_count": 1,
+      "response_time": 824,
+      "tokens_used": 148,
+      "timestamp": "2026-07-30T06:25:16.411Z"
+    },
+    {
+      "id": "532c4beb-adc2-4d0f-a9f9-b33606508866",
+      "created_at": "2026-07-31T06:25:16.432Z",
+      "updated_at": "2026-07-31T06:25:16.432Z",
+      "user_id": "13e3b3ea-f04a-4995-bdf5-1b7a3999c6dc",
+      "employee_id": "d462ce2b-c21c-494b-b912-5647ba09d9e2",
+      "usage_count": 1,
+      "response_time": 693,
+      "tokens_used": 216,
+      "timestamp": "2026-07-31T06:25:16.432Z"
+    },
+    {
+      "id": "3d3e77b3-6727-4a7e-8991-d1099b7974f1",
+      "created_at": "2026-07-31T10:40:11.764Z",
+      "updated_at": "2026-07-31T10:40:11.764Z",
+      "user_id": "13e3b3ea-f04a-4995-bdf5-1b7a3999c6dc",
+      "employee_id": "902392df-a5c7-4033-a242-bf29c63078f4",
+      "usage_count": 1,
+      "response_time": 800,
+      "tokens_used": 100
+    },
+    {
+      "id": "d456bcc9-050b-49f1-a63f-867b9002d290",
+      "created_at": "2026-07-31T11:34:21.479Z",
+      "updated_at": "2026-07-31T11:34:21.479Z",
+      "user_id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9",
+      "employee_id": "0697918e-8833-47be-a16b-cc1375666135",
+      "usage_count": 1,
+      "response_time": 814,
+      "tokens_used": 190
+    },
+    {
+      "id": "ed714914-2bf0-44f9-bb8b-a3e1cce14b7c",
+      "created_at": "2026-07-31T11:41:58.804Z",
+      "updated_at": "2026-07-31T11:41:58.804Z",
+      "user_id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9",
+      "employee_id": "d95bab49-7db9-4213-ac7e-f27d4f8d3313",
+      "usage_count": 1,
+      "response_time": 803,
+      "tokens_used": 179
+    },
+    {
+      "id": "d7047f70-52b2-4d1a-b05a-13cb7384086f",
+      "created_at": "2026-08-01T05:52:29.634Z",
+      "updated_at": "2026-08-01T05:52:29.634Z",
+      "user_id": "6ec06b93-3b73-448b-a36d-36561e9b8b39",
+      "employee_id": "3e0c4797-a366-45bd-a0a3-f6a1cd120e83",
+      "usage_count": 1,
+      "response_time": 2,
+      "tokens_used": 163
+    }
+  ],
+  "activity_logs": [
+    {
+      "id": "331884bf-edb6-476e-a552-6637d306ed7b",
+      "created_at": "2026-07-31T04:13:05.101Z",
+      "updated_at": "2026-07-31T06:13:05.101Z",
+      "user_id": "5c7981f9-92c4-4b08-9db2-cf370dd6d5c6",
+      "action": "employee_create",
+      "details": "Created HR Assistant - Sophia Williams"
+    },
+    {
+      "id": "a2aa9ee3-60f6-4b03-aec5-e959fa0767a8",
+      "created_at": "2026-07-31T06:14:16.032Z",
+      "updated_at": "2026-07-31T06:14:16.032Z",
+      "user_id": "5c7981f9-92c4-4b08-9db2-cf370dd6d5c6",
+      "action": "employee_create",
+      "details": "Hired employee AI Support Helper (Support)"
+    },
+    {
+      "id": "6562955b-1f51-4d06-b261-9542b8d767d1",
+      "created_at": "2026-07-31T04:16:51.579Z",
+      "updated_at": "2026-07-31T06:16:51.579Z",
+      "user_id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9",
+      "action": "employee_create",
+      "details": "Created HR Assistant - Sophia Williams"
+    },
+    {
+      "id": "e307569e-4490-4d44-8153-f69fde8b457e",
+      "created_at": "2026-07-31T06:17:24.168Z",
+      "updated_at": "2026-07-31T06:17:24.168Z",
+      "user_id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9",
+      "action": "employee_create",
+      "details": "Hired employee john (Support)"
+    },
+    {
+      "id": "4134ae3a-f558-4be0-b038-c78800db3b6e",
+      "created_at": "2026-07-31T04:25:16.325Z",
+      "updated_at": "2026-07-31T06:25:16.325Z",
+      "user_id": "13e3b3ea-f04a-4995-bdf5-1b7a3999c6dc",
+      "action": "employee_create",
+      "details": "Created HR Assistant - Sophia Williams"
+    },
+    {
+      "id": "0812c6e6-e374-40b9-b7dd-22c25b5975e2",
+      "created_at": "2026-07-31T06:27:53.041Z",
+      "updated_at": "2026-07-31T06:27:53.041Z",
+      "user_id": "13e3b3ea-f04a-4995-bdf5-1b7a3999c6dc",
+      "action": "employee_create",
+      "details": "Hired employee Roman (Support)"
+    },
+    {
+      "id": "879df347-7aae-4dee-80d3-a17cb0ab5104",
+      "created_at": "2026-07-31T10:11:22.664Z",
+      "updated_at": "2026-07-31T10:11:22.664Z",
+      "user_id": "6ec06b93-3b73-448b-a36d-36561e9b8b39",
+      "action": "employee_create",
+      "details": "Hired employee Test Worker (Recruiter)"
+    },
+    {
+      "id": "bdcb16fc-8d1e-424c-977c-40ad74651a34",
+      "created_at": "2026-07-31T10:26:35.476Z",
+      "updated_at": "2026-07-31T10:26:35.476Z",
+      "user_id": "13e3b3ea-f04a-4995-bdf5-1b7a3999c6dc",
+      "action": "employee_create",
+      "details": "Hired employee API Test Employee (Support)"
+    },
+    {
+      "id": "bb26c723-f23f-44f2-bba3-19c91deb3cbc",
+      "created_at": "2026-07-31T10:27:22.018Z",
+      "updated_at": "2026-07-31T10:27:22.018Z",
+      "user_id": "13e3b3ea-f04a-4995-bdf5-1b7a3999c6dc",
+      "action": "employee_delete",
+      "details": "Fired employee API Test Employee"
+    },
+    {
+      "id": "5f7bc83d-38f5-4128-812b-8722a065532b",
+      "created_at": "2026-07-31T11:12:59.418Z",
+      "updated_at": "2026-07-31T11:12:59.418Z",
+      "user_id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9",
+      "action": "employee_update",
+      "details": "Updated employee john settings"
+    },
+    {
+      "id": "a1602fb7-112c-446c-bb10-94b9b4f45cc6",
+      "created_at": "2026-07-31T11:13:48.994Z",
+      "updated_at": "2026-07-31T11:13:48.994Z",
+      "user_id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9",
+      "action": "employee_update",
+      "details": "Updated employee john settings"
+    },
+    {
+      "id": "28cf675e-3033-4393-94eb-40ea1fff06ef",
+      "created_at": "2026-07-31T11:14:23.771Z",
+      "updated_at": "2026-07-31T11:14:23.771Z",
+      "user_id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9",
+      "action": "employee_update",
+      "details": "Updated employee john settings"
+    },
+    {
+      "id": "36df9de3-7755-4d44-a4bf-2adf15524eb7",
+      "created_at": "2026-07-31T11:33:21.468Z",
+      "updated_at": "2026-07-31T11:33:21.468Z",
+      "user_id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9",
+      "action": "employee_create",
+      "details": "Hired employee Verifier Bot (HR)"
+    },
+    {
+      "id": "2a059c32-680b-4a00-b0f2-d00bc641423b",
+      "created_at": "2026-07-31T11:35:34.273Z",
+      "updated_at": "2026-07-31T11:35:34.273Z",
+      "user_id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9",
+      "action": "employee_update",
+      "details": "Updated employee Verifier Bot settings"
+    },
+    {
+      "id": "28bd03b3-ce41-456c-93f4-8b7f7248e74a",
+      "created_at": "2026-07-31T11:41:41.022Z",
+      "updated_at": "2026-07-31T11:41:41.022Z",
+      "user_id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9",
+      "action": "employee_create",
+      "details": "Hired employee Roman (Finance)"
+    },
+    {
+      "id": "83bea29c-e87e-456e-9ee8-f21909abb85a",
+      "created_at": "2026-08-01T06:36:24.526Z",
+      "updated_at": "2026-08-01T06:36:24.526Z",
+      "user_id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9",
+      "action": "kb_delete",
+      "details": "Removed document certificate_CERT-1-10-11A17C35.pdf from Roman"
+    },
+    {
+      "id": "5dcda901-b011-451d-9063-59d7e51cddd8",
+      "created_at": "2026-08-01T06:40:55.516Z",
+      "updated_at": "2026-08-01T06:40:55.516Z",
+      "user_id": "0f3aca6a-cc97-4c4e-8396-b23bf45881b9",
+      "action": "employee_create",
+      "details": "Hired employee John cena  (Recruiter)"
+    }
+  ],
+  "document_chunks": []
+}
