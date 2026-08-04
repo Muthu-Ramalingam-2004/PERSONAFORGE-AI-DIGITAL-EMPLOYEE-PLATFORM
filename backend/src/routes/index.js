@@ -17,6 +17,7 @@ router.use('/dashboard', dashboardRoutes);
 
 // Mount Employee CRUD routes
 router.use('/employee', employeeRoutes);
+router.use('/employees', employeeRoutes);
 
 // Mount Chat routes
 router.use('/chat', chatRoutes);
