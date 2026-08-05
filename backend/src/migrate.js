@@ -11,7 +11,7 @@ const DB_PATH = path.join(__dirname, "../db_emulated.json");
 const SCHEMA_PATH = path.join(__dirname, "../../docs/schema.sql");
 
 const TABLE_COLUMNS = {
-  users: ['id', 'firebase_uid', 'email', 'name', 'role', 'subscription_plan', 'created_at', 'updated_at'],
+  users: ['id', 'firebase_uid', 'email', 'password', 'name', 'role', 'subscription_plan', 'created_at', 'updated_at'],
   ai_employees: ['id', 'user_id', 'name', 'avatar_url', 'category', 'status', 'created_at', 'updated_at'],
   prompts: ['id', 'employee_id', 'system_prompt', 'personality_prompt', 'goal', 'tone', 'temperature', 'max_tokens', 'created_at', 'updated_at'],
   chats: ['id', 'user_id', 'employee_id', 'title', 'created_at', 'updated_at'],
@@ -85,6 +85,8 @@ async function runMigration() {
       console.log("⏳ [MIGRATION] Ensuring database schema is initialized...");
       const schemaSql = fs.readFileSync(SCHEMA_PATH, "utf8");
       await client.query(schemaSql);
+      console.log("⏳ [MIGRATION] Ensuring password column exists in users table...");
+      await client.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS password VARCHAR(255)');
       console.log("✅ [MIGRATION] Database schema checked/initialized.");
     } else {
       console.warn("⚠️  [MIGRATION] schema.sql not found at", SCHEMA_PATH);

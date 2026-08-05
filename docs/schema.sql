@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     firebase_uid VARCHAR(255) UNIQUE NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255),
     name VARCHAR(255),
     role VARCHAR(50) DEFAULT 'user', -- 'user', 'admin'
     subscription_plan VARCHAR(50) DEFAULT 'free', -- 'free', 'pro', 'enterprise'

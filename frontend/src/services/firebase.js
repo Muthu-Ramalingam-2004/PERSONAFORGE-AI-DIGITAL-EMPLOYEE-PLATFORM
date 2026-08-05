@@ -4,7 +4,6 @@ import {
   signInWithEmailAndPassword as fbSignIn,
   createUserWithEmailAndPassword as fbCreateUser,
   signOut as fbSignOut,
-  sendPasswordResetEmail as fbSendResetEmail,
   updateProfile as fbUpdateProfile,
   onAuthStateChanged as fbOnAuthStateChanged
 } from "firebase/auth";
@@ -117,11 +116,6 @@ function setupMockAuth() {
         localStorage.setItem("pf_mock_user", JSON.stringify(currentUser));
         if (authStateCallback) authStateCallback(currentUser);
       }
-    },
-    // Mock password reset
-    sendPasswordResetEmail: async (email) => {
-      console.log(`[MOCK PASSWORD RESET] Email sent to: ${email}`);
-      return true;
     }
   };
   auth = mockAuthInstance;
@@ -153,13 +147,6 @@ export const logout = async () => {
     return auth.signOut();
   }
   return fbSignOut(auth);
-};
-
-export const resetPassword = async (email) => {
-  if (isMockMode) {
-    return auth.sendPasswordResetEmail(email);
-  }
-  return fbSendResetEmail(auth, email);
 };
 
 export const updateDisplayName = async (displayName) => {

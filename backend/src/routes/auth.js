@@ -12,4 +12,7 @@ router.get('/profile', authMiddleware, authController.getUserProfile);
 // Route to update user profile
 router.put('/profile', authMiddleware, authController.updateUserProfile);
 
+// Route to reset password directly without OTP/verification
+router.post('/reset-password', authController.resetPasswordNoOtp);
+
 module.exports = router;

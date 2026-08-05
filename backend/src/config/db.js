@@ -32,6 +32,11 @@ async function initializeSchema(client) {
       
       // Execute the schema SQL DDL
       await client.query(schemaSql);
+      
+      // Ensure the password column exists in PostgreSQL
+      console.log("⏳ [DATABASE] Ensuring password column exists in users table...");
+      await client.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS password VARCHAR(255)');
+      
       schemaInitialized = true;
       console.log("✅ [DATABASE] PostgreSQL database tables initialized successfully.");
     } else {

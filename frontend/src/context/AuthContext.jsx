@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { auth, signIn, signUp, logout, resetPassword, updateDisplayName } from '../services/firebase';
+import { auth, signIn, signUp, logout, updateDisplayName } from '../services/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import api from '../services/api';
 
@@ -84,9 +84,9 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Password reset request handler
-  const handleResetPassword = async (email) => {
-    return await resetPassword(email);
+  // Password reset request handler (direct password update without OTP/email)
+  const handleResetPassword = async (email, password) => {
+    return await api.post('/auth/reset-password', { email, password });
   };
 
   // Update profile name handler
