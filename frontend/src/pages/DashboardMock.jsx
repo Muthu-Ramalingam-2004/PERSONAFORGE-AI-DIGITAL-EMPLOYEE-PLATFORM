@@ -105,7 +105,7 @@ const DashboardMock = () => {
             </div>
 
             <button
-              onClick={() => alert('AI Employee creation will be unlocked in Module 3!')}
+              onClick={() => navigate('/employees', { state: { openCreateModal: true } })}
               className="flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-white shadow-md shadow-primary/20 hover:bg-primary-hover hover:shadow-primary/30 transition"
             >
               <Plus className="h-4 w-4" />
@@ -141,7 +141,7 @@ const DashboardMock = () => {
             </div>
             <h3 className="mt-4 text-lg font-bold text-text-primary">Ready to deploy your digital workers?</h3>
             <p className="mt-2 text-sm text-text-secondary max-w-md mx-auto">
-              Your authentication module is active and verified. The dashboard, statistics, and AI employee generation modules will unlock in the next phase!
+              Your authentication module is active and verified. The dashboard, statistics, and AI employee directory are now fully active and unlocked!
             </p>
             <div className="mt-6 flex justify-center gap-4">
               <Link

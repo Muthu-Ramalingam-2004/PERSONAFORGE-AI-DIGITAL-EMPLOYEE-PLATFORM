@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useToast } from '../context/ToastContext';
 import { fetchEmployees, createEmployee, toggleEmployeeStatus, deleteEmployee } from '../services/employee';
 import api from '../services/api';
@@ -37,6 +37,7 @@ const Employees = () => {
 
   const { showToast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const categories = ['All', 'HR', 'Sales', 'Support', 'Marketing', 'Recruiter', 'Finance', 'Operations'];
 
@@ -124,6 +125,13 @@ const Employees = () => {
   useEffect(() => {
     loadEmployees();
   }, []);
+
+  useEffect(() => {
+    if (location.state?.openCreateModal) {
+      setModalOpen(true);
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   const handleToggleStatus = async (id, currentStatus) => {
     const nextStatus = currentStatus === 'active' ? 'inactive' : 'active';

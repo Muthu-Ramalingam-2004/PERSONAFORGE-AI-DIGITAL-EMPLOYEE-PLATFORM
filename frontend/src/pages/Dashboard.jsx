@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { fetchStats, fetchActivities, fetchCharts } from '../services/dashboard';
@@ -17,6 +17,7 @@ import { motion } from 'framer-motion';
 const Dashboard = () => {
   const { dbUser, currentUser } = useAuth();
   const { showToast } = useToast();
+  const navigate = useNavigate();
   
   const [stats, setStats] = useState(null);
   const [activities, setActivities] = useState([]);
@@ -141,7 +142,7 @@ const Dashboard = () => {
         </div>
 
         <button
-          onClick={() => showToast('AI Employee creation will be unlocked in Module 3!', 'info')}
+          onClick={() => navigate('/employees', { state: { openCreateModal: true } })}
           className="flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-white shadow-md shadow-primary/20 hover:bg-primary-hover hover:shadow-primary/30 transition hover:scale-101 duration-150"
         >
           <Plus className="h-4 w-4" />
